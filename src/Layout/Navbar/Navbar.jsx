@@ -1,50 +1,86 @@
 import React from "react";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
+import logoAnimation from "../../assets/Lotties/supper-shop-logo.json";
+import { Typewriter } from "react-simple-typewriter";
+import Lottie from "lottie-react";
 
 const Navbar = () => {
   const links = (
-    <div className="flex gap-3">
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/login">Login</NavLink>
-      <NavLink to="/register">Register</NavLink>
-    </div>
+    <>
+      <li><NavLink to="/">Home</NavLink></li>
+      <li><NavLink to="/login">Login</NavLink></li>
+      <li><NavLink to="/register">Register</NavLink></li>
+    </>
   );
 
   return (
-    <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar bg-base-100 shadow-sm px-4">
+      {/* Navbar Start: Logo */}
       <div className="navbar-start">
+        <Link to="/" className="flex items-center space-x-3 select-none">
+          <div className="w-12 h-12">
+            <Lottie animationData={logoAnimation} loop={true} />
+          </div>
+          <h2 className="text-2xl md:text-3xl font-extrabold flex items-center space-x-1">
+            <span className="text-orange-500">
+              <Typewriter
+                words={["Supper"]}
+                loop={1}
+                cursor
+                cursorStyle="|"
+                typeSpeed={120}
+                deleteSpeed={50}
+                delaySpeed={1000}
+              />
+            </span>
+            <span>&nbsp;</span>
+            <span className="text-purple-600">
+              <Typewriter
+                words={["Shop"]}
+                loop={1}
+                cursor={false}
+                typeSpeed={120}
+                deleteSpeed={50}
+                delaySpeed={2500}
+              />
+            </span>
+          </h2>
+        </Link>
+      </div>
+
+      {/* Navbar Center: Menu (Desktop) */}
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal px-1 items-center gap-3">{links}</ul>
+      </div>
+
+      {/* Navbar End: Menu Button */}
+      <div className="navbar-end">
+        <a className="btn btn-sm">Get Started</a>
+      </div>
+
+      {/* Mobile Dropdown */}
+      <div className="lg:hidden absolute top-full left-0 w-full">
         <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+          <div tabIndex={0} role="button" className="btn btn-ghost">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              {" "}
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />{" "}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-          >
+          <ul className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
             {links}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">Supper Shop</a>
-      </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">{links}</ul>
-      </div>
-      <div className="navbar-end">
-        <a className="btn">Button</a>
       </div>
     </div>
   );
