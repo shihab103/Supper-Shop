@@ -1,11 +1,8 @@
-import React from 'react';
+import { createBrowserRouter } from "react-router";
+import RootLayout from "../Layout/RootLayout/RootLayout";
 
-const MainRoute = () => {
-    return (
-        <div>
-            
-        </div>
-    );
-};
+const MainRoute = createBrowserRouter([
+  { path: "/", Component: RootLayout},
+]);
 
 export default MainRoute;
