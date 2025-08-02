@@ -1,4 +1,8 @@
 import { Link } from "react-router";
+import registerAnimation from "../../assets/Lotties/register.json";
+import logoAnimation from "../../assets/Lotties/supper-shop-logo.json";
+import Lottie from "lottie-react";
+import { Typewriter } from "react-simple-typewriter";
 
 const Register = () => {
   const handleRegister = (e) => {
@@ -6,38 +10,105 @@ const Register = () => {
     const form = e.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    const { email, password } = data;
-    console.log(email, password);
+    const { name, email, password } = data;
+    console.log(name, email, password);
   };
+
   return (
-    <div className="mx-auto mt-10 card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-      <div className="card-body">
-        <h1 className="text-5xl font-bold text-center">Register now!</h1>
-        <form onSubmit={handleRegister} className="fieldset">
-          <label className="label">Email</label>
-          <input
-            type="email"
-            name="email"
-            className="input"
-            placeholder="Email"
-          />
-          <label className="label">Password</label>
-          <input
-            type="password"
-            name="password"
-            className="input"
-            placeholder="Password"
-          />
-          <button type="submit" className="btn btn-neutral mt-4">
-            Register
-          </button>
-        </form>
-        <p>
-          Already have an account? Please{" "}
-          <Link className="text-blue-500 underline" to="/login">
-            Login
+    <div className="min-h-screen flex items-center justify-center bg-base-200">
+      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-base-100 shadow-xl rounded-2xl p-6 relative">
+        
+        {/* Left side (Form + Logo + Text) */}
+        <div className="relative p-8">
+          {/* Logo and Text */}
+          <Link to="/" className="flex items-center space-x-3 mb-8 select-none">
+            <div className="w-20 h-20">
+              <Lottie animationData={logoAnimation} loop={true} />
+            </div>
+
+            <h2 className="text-3xl font-extrabold flex items-center space-x-1">
+              {/* Supper typed in orange */}
+              <span className="text-orange-500">
+                <Typewriter
+                  words={["Supper"]}
+                  loop={1}
+                  cursor
+                  cursorStyle="|"
+                  typeSpeed={120}
+                  deleteSpeed={50}
+                  delaySpeed={1000}
+                />
+              </span>
+              
+              {/* Space between words */}
+              <span>&nbsp;</span>
+
+              {/* Shop typed in purple */}
+              <span className="text-purple-600">
+                <Typewriter
+                  words={["Shop"]}
+                  loop={1}
+                  cursor={false}
+                  typeSpeed={120}
+                  deleteSpeed={50}
+                  delaySpeed={2500} // Starts after Supper finishes
+                />
+              </span>
+            </h2>
           </Link>
-        </p>
+
+          {/* Register Title */}
+          <h1 className="text-4xl font-bold mb-6 text-center">Register Now!</h1>
+
+          {/* Form */}
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div>
+              <label className="label">Name</label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                className="input input-bordered w-full"
+                required
+              />
+            </div>
+            <div>
+              <label className="label">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="input input-bordered w-full"
+                required
+              />
+            </div>
+            <div>
+              <label className="label">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="input input-bordered w-full"
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-neutral w-full">
+              Register
+            </button>
+          </form>
+
+          <p className="mt-4 text-center">
+            Already have an account?{" "}
+            <Link className="text-blue-500 underline" to="/login">
+              Login
+            </Link>
+          </p>
+        </div>
+
+        {/* Right side (Register animation) */}
+        <div className="hidden md:block">
+          <Lottie animationData={registerAnimation} loop={true} />
+        </div>
       </div>
     </div>
   );
