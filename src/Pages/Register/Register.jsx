@@ -2,16 +2,42 @@ import { Link } from "react-router";
 import registerAnimation from "../../assets/Lotties/register.json";
 import logoAnimation from "../../assets/Lotties/supper-shop-logo.json";
 import Lottie from "lottie-react";
+import Swal from "sweetalert2";
 import { Typewriter } from "react-simple-typewriter";
+import useAuth from "../../Hooks/useAuth";
 
 const Register = () => {
+  const { createUser } = useAuth();
+
   const handleRegister = (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     const { name, email, password } = data;
-    console.log(name, email, password);
+    console.log("🚀 ~ handleRegister ~ name:", name);
+    // console.log(name, email, password);
+
+    createUser(email, password)
+      .then((result) => {
+        console.log("🚀 ~ handleRegister ~ result:", result);
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Your work has been saved",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      })
+      .catch((error) => {
+        console.log("🚀 ~ handleRegister ~ error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          footer: '<a href="#">Why do I have this issue?</a>',
+        });
+      });
   };
 
   return (
@@ -55,7 +81,9 @@ const Register = () => {
         <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-base-100 shadow-xl rounded-2xl relative">
           {/* Left side (Form only) */}
           <div className="relative px-8">
-            <h1 className="text-4xl font-bold mb-6 text-center">Register Now!</h1>
+            <h1 className="text-4xl font-bold mb-6 text-center">
+              Register Now!
+            </h1>
 
             {/* Form */}
             <form onSubmit={handleRegister} className="space-y-4">

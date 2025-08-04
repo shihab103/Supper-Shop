@@ -1,14 +1,15 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import loginAnimation from "../../assets/Lotties/Login.json";
 import logoAnimation from "../../assets/Lotties/supper-shop-logo.json";
 import Lottie from "lottie-react";
-import { useContext } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import Swal from "sweetalert2";
 import { Typewriter } from "react-simple-typewriter";
+import useAuth from "../../Hooks/useAuth";
 
 const Login = () => {
-  const { signIn } = useContext(AuthContext);
+  const {signIn} = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ const Login = () => {
     // sign in user
     signIn(email, password)
       .then((userCredential) => {
+        navigate('/');
         Swal.fire({
           icon: "success",
           title: "Login Successful",

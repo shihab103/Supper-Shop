@@ -1,15 +1,32 @@
 import React from "react";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import logoAnimation from "../../assets/Lotties/supper-shop-logo.json";
 import { Typewriter } from "react-simple-typewriter";
 import Lottie from "lottie-react";
+import useAuth from "../../Hooks/useAuth";
 
 const Navbar = () => {
+  const { user, logOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logOut()
+      .then((result) => {
+        console.log("🚀 ~ handleLogout ~ result:", result);
+navigate('/login');
+      })
+      .catch((error) => {
+        console.log("🚀 ~ handleLogout ~ error:", error);
+      });
+  };
   const links = (
     <>
-      <li><NavLink to="/">Home</NavLink></li>
-      <li><NavLink to="/login">Login</NavLink></li>
-      <li><NavLink to="/register">Register</NavLink></li>
+      <li>
+        <NavLink to="/">Home</NavLink>
+      </li>
+      <li>
+        <NavLink to="/add-category">Add Category</NavLink>
+      </li>
     </>
   );
 
@@ -50,12 +67,23 @@ const Navbar = () => {
 
       {/* Navbar Center: Menu (Desktop) */}
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 items-center gap-3">{links}</ul>
+        <ul className="menu menu-horizontal px-1 items-center gap-3">
+          {links}
+        </ul>
       </div>
 
       {/* Navbar End: Menu Button */}
       <div className="navbar-end">
-        <a className="btn btn-sm">Get Started</a>
+        {user ? (
+          <button onClick={handleLogout} className="btn">
+            Log Out
+          </button>
+        ) : (
+          <div className="flex gap-3">
+              <NavLink className={'btn btn-primary'} to="/login">Login</NavLink>
+              <NavLink className={'btn btn-primary'} to="/register">Register</NavLink>
+          </div>
+        )}
       </div>
 
       {/* Mobile Dropdown */}
