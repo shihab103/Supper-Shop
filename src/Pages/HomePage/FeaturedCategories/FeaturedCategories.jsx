@@ -1,17 +1,32 @@
-import React from 'react';
-import Groceries from '../../../assets/Photos/CategoryImage/Groceries.jpg';
-import CookingEssentials from '../../../assets/Photos/CategoryImage/CookingEssentials.jpg';
-import PersonalCare from '../../../assets/Photos/CategoryImage/PersonalCare.jpg';
-import DryFoods from '../../../assets/Photos/CategoryImage/Packaged&DryFoods.jpg';
-
-const categories = [
-  { name: 'Groceries', image: Groceries },
-  { name: 'Cooking Essentials', image: CookingEssentials },
-  { name: 'Personal Care', image: PersonalCare },
-  { name: 'Packaged & Dry Foods', image: DryFoods },
-];
+import React, { useEffect, useState } from "react";
+import useAuth from "../../../Hooks/useAuth";
 
 const FeaturedCategories = () => {
+  const [categories, setCategories] = useState([]);
+
+  const { loading, setLoading } = useAuth();
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("http://localhost:3000/get-category");
+        const data = await res.json();
+        setCategories(data);
+      } catch (error) {
+        console.log(error);
+      }
+      finally{
+        setLoading(false);
+      }
+    };
+    fetchCategory();
+  }, []);
+
+  if(loading){
+    return <span>Loading..........</span>
+  }
+
   return (
     <section className="py-12 px-6 md:px-16 bg-gray-50">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">
@@ -19,9 +34,9 @@ const FeaturedCategories = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <div
-            key={index}
+            key={category._id}
             className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 cursor-pointer"
           >
             <img

@@ -1,24 +1,47 @@
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 
 const AddCategory = () => {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const onSubmit = (data) => {
-    const name = data.name;
-    const imageFile = data.image[0];
+  const onSubmit = async (data) => {
+    const category = {
+      name: data.name,
+      image: data.image,
+    };
 
-    // Optional: handle image upload here (e.g., Firebase or ImgBB)
-    console.log("Category Name:", name);
-    console.log("Image File:", imageFile);
+    try {
+      const res = await fetch("http://localhost:3000/add-category", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(category),
+      });
+      const result = await res.json();
+      console.log("Added: ", result);
+      Swal.fire({
+        icon: "success",
+        title: "Added Successful",
+        text: `Welcome`,
+      });
+      reset();
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
 
     // After successful upload & save
-    reset();
   };
 
   return (
     <div className="max-w-md mx-auto bg-white p-6  rounded shadow-md my-10">
       <h2 className="text-2xl font-bold mb-4">Add New Category</h2>
-      
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Category Name */}
         <div>
@@ -29,7 +52,9 @@ const AddCategory = () => {
             placeholder="e.g. Groceries"
             className="input input-bordered w-full"
           />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Category Image */}
@@ -41,10 +66,14 @@ const AddCategory = () => {
             {...register("image", { required: "Image is required" })}
             className="file-input file-input-bordered w-full"
           />
-          {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
+          {errors.image && (
+            <p className="text-red-500 text-sm">{errors.image.message}</p>
+          )}
         </div>
 
-        <button type="submit" className="btn btn-primary w-full">Add Category</button>
+        <button type="submit" className="btn btn-primary w-full">
+          Add Category
+        </button>
       </form>
     </div>
   );
