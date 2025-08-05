@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router";
 import useAuth from "../../../Hooks/useAuth";
 import Loading from "../../../Layout/Shared/Loading/Loading";
 
@@ -7,8 +8,8 @@ const FeaturedCategories = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const { loading, setLoading } = useAuth();
-
   const intervalRef = useRef(null);
+  const navigate = useNavigate();
 
   // Fetch categories
   useEffect(() => {
@@ -27,7 +28,7 @@ const FeaturedCategories = () => {
     fetchCategory();
   }, []);
 
-  // Auto-slide (pause on hover)
+  // Auto-slide
   useEffect(() => {
     if (!categories.length || isPaused) return;
 
@@ -40,7 +41,7 @@ const FeaturedCategories = () => {
     return () => clearInterval(intervalRef.current);
   }, [categories, isPaused]);
 
-  // Get visible categories
+  // Visible items
   const getVisibleCategories = () => {
     if (categories.length === 0) return [];
     const items = [];
@@ -69,17 +70,12 @@ const FeaturedCategories = () => {
         >
           {visibleCategories.map((category, idx) => {
             const isCenter = idx === 2;
-
             return (
               <div
                 key={category._id}
-                onClick={() => setCurrentIndex(category.realIndex)} // Click to center
+                onClick={() => navigate(`/category/${category._id}`)}
                 className={`w-40 md:w-52 h-[260px] rounded-xl shadow-md cursor-pointer transform transition-all duration-500 flex-shrink-0
-                  ${
-                    isCenter
-                      ? "scale-105 shadow-lg z-10"
-                      : "scale-90 opacity-60"
-                  }
+                  ${isCenter ? "scale-105 shadow-lg z-10" : "scale-90 opacity-60"}
                 `}
               >
                 <img
