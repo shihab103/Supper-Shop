@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Loading from "../../../../Layout/Shared/Loading/Loading";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -22,7 +23,7 @@ const AllProducts = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-center text-lg py-20">Loading products...</p>;
+    return <Loading/>;
   }
 
   return (

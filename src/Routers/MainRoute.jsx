@@ -7,6 +7,7 @@ import AddCategory from "../Component/Dashboard/Admin/AddCategory/AddCategory";
 import AddProduct from "../Component/Dashboard/Admin/AddProduct/AddProduct";
 import AllProducts from "../Component/Dashboard/Admin/AllProducts/AllProducts";
 import CategoryProducts from "../Pages/HomePage/CategoryProducts/CategoryProducts";
+import ProductDetails from "../Pages/HomePage/ProductDetails/ProductDetails";
 
 const MainRoute = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const MainRoute = createBrowserRouter([
       { path: "/add-product", Component: AddProduct },
       { path: "/all-products", Component: AllProducts },
       { path: "/category/:categoryName", Component: CategoryProducts },
+      {
+        path: "/product/:id",
+        Component: ProductDetails,
+      },
     ],
   },
   { path: "/login", Component: Login },

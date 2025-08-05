@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Loading from "../../../Layout/Shared/Loading/Loading";
 
 const CategoryProducts = () => {
   const { categoryName: categoryId } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate =useNavigate();
 
   useEffect(() => {
     const fetchProductsByCategory = async () => {
@@ -57,7 +58,7 @@ const CategoryProducts = () => {
                   <button className="btn btn-sm btn-success">
                     Add
                   </button>
-                  <button className="btn btn-sm btn-primary">
+                  <button onClick={()=>navigate(`/product/${product._id}`)} className="btn btn-sm btn-primary">
                     View Details
                   </button>
                 </div>
