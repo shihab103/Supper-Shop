@@ -9,37 +9,56 @@ const AddCategory = () => {
     formState: { errors },
   } = useForm();
 
+
   const onSubmit = async (data) => {
-    const category = {
-      name: data.name,
-      image: data.image,
-    };
+    const imageFile = data.image[0]; 
+
+    const formData = new FormData();
+    formData.append("image", imageFile);
 
     try {
-      const res = await fetch("http://localhost:3000/add-category", {
+      const imgbbRes = await fetch(
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const imgbbData = await imgbbRes.json();
+      const imageUrl = imgbbData.data.url;
+
+      const category = {
+        name: data.name,
+        image: imageUrl,
+      };
+
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/add-category`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(category),
       });
+
       const result = await res.json();
       console.log("Added: ", result);
+
       Swal.fire({
         icon: "success",
-        title: "Added Successful",
-        text: `Welcome`,
+        title: "Category Added!",
+        text: `Category "${category.name}" has been added.`,
       });
+
       reset();
     } catch (error) {
       console.error("Error adding category:", error);
+      Swal.fire("Error", "Something went wrong", "error");
     }
-
-    // After successful upload & save
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6  rounded shadow-md my-10">
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow-md my-10">
       <h2 className="text-2xl font-bold mb-4">Add New Category</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -57,11 +76,11 @@ const AddCategory = () => {
           )}
         </div>
 
-        {/* Category Image */}
+        {/* Category Image Upload */}
         <div>
           <label className="block mb-1 font-medium">Category Image</label>
           <input
-            type="url"
+            type="file"
             accept="image/*"
             {...register("image", { required: "Image is required" })}
             className="file-input file-input-bordered w-full"

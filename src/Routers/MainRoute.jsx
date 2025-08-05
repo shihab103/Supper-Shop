@@ -4,6 +4,8 @@ import Register from "../Pages/Register/Register";
 import Login from "../Pages/Login/Login";
 import Home from "../Pages/HomePage/Home/Home";
 import AddCategory from "../Component/Dashboard/Admin/AddCategory/AddCategory";
+import AddProduct from "../Component/Dashboard/Admin/AddProduct/AddProduct";
+import AllProducts from "../Component/Dashboard/Admin/AllProducts/AllProducts";
 
 const MainRoute = createBrowserRouter([
   {
@@ -12,6 +14,8 @@ const MainRoute = createBrowserRouter([
     children: [
       { index: true, Component: Home },
       { path: "/add-category", Component: AddCategory },
+      { path: "/add-product", Component: AddProduct },
+      { path: "/all-products", Component: AllProducts },
     ],
   },
   { path: "/login", Component: Login },

@@ -13,7 +13,7 @@ const Navbar = () => {
     logOut()
       .then((result) => {
         console.log("🚀 ~ handleLogout ~ result:", result);
-navigate('/login');
+        navigate("/login");
       })
       .catch((error) => {
         console.log("🚀 ~ handleLogout ~ error:", error);
@@ -26,6 +26,12 @@ navigate('/login');
       </li>
       <li>
         <NavLink to="/add-category">Add Category</NavLink>
+      </li>
+      <li>
+        <NavLink to="/add-product">Add Product</NavLink>
+      </li>
+      <li>
+        <NavLink to="/all-products">All Product</NavLink>
       </li>
     </>
   );
@@ -80,8 +86,12 @@ navigate('/login');
           </button>
         ) : (
           <div className="flex gap-3">
-              <NavLink className={'btn btn-primary'} to="/login">Login</NavLink>
-              <NavLink className={'btn btn-primary'} to="/register">Register</NavLink>
+            <NavLink className={"btn btn-primary"} to="/login">
+              Login
+            </NavLink>
+            <NavLink className={"btn btn-primary"} to="/register">
+              Register
+            </NavLink>
           </div>
         )}
       </div>
