@@ -8,6 +8,7 @@ import AddProduct from "../Component/Dashboard/Admin/AddProduct/AddProduct";
 import AllProducts from "../Component/Dashboard/Admin/AllProducts/AllProducts";
 import CategoryProducts from "../Pages/HomePage/CategoryProducts/CategoryProducts";
 import ProductDetails from "../Pages/HomePage/ProductDetails/ProductDetails";
+import WishList from "../Pages/WishList/WishList";
 
 const MainRoute = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const MainRoute = createBrowserRouter([
       {
         path: "/product/:id",
         Component: ProductDetails,
+      },
+      {
+        path: "/wishlist",
+        Component: WishList,
       },
     ],
   },

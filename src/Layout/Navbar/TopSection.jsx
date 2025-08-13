@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ShopLogo from "../Shared/ShopLogo/ShopLogo";
 import { FiUser, FiHeart, FiShoppingCart, FiChevronDown } from "react-icons/fi";
+import { useNavigate } from "react-router";
 
 const TopSection = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ const TopSection = () => {
             <FiUser className="text-xl" />
             <span>Account</span>
           </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:text-primary">
+          <div onClick={()=>navigate('/wishlist')} className="flex items-center gap-1 cursor-pointer hover:text-primary">
             <FiHeart className="text-xl" />
             <span>Wishlist</span>
           </div>
