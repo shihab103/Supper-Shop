@@ -10,6 +10,7 @@ import CategoryProducts from "../Pages/HomePage/CategoryProducts/CategoryProduct
 import ProductDetails from "../Pages/HomePage/ProductDetails/ProductDetails";
 import WishList from "../Pages/WishList/WishList";
 import DashboardLayout from "../Layout/DashboardLayout/DashboardLayout";
+import Account from "../Pages/Account/Account";
 
 const MainRoute = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const MainRoute = createBrowserRouter([
   },
   { path: "/login", Component: Login },
   { path: "/register", Component: Register },
+  { path: "/account", Component: Account },
   {
     path: "/dashboard",
     Component: DashboardLayout,

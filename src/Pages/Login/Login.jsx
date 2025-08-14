@@ -2,13 +2,12 @@ import { Link, useNavigate } from "react-router";
 import loginAnimation from "../../assets/Lotties/Login.json";
 import logoAnimation from "../../assets/Lotties/supper-shop-logo.json";
 import Lottie from "lottie-react";
-import { AuthContext } from "../../Context/AuthContext";
 import Swal from "sweetalert2";
 import { Typewriter } from "react-simple-typewriter";
 import useAuth from "../../Hooks/useAuth";
 
 const Login = () => {
-  const {signIn} = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
@@ -16,18 +15,19 @@ const Login = () => {
 
     const form = e.target;
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-    const { email, password } = data;
+    const { email, password } = Object.fromEntries(formData.entries());
 
-    // sign in user
+    // Sign in user
     signIn(email, password)
       .then((userCredential) => {
-        navigate('/');
         Swal.fire({
           icon: "success",
           title: "Login Successful",
-          text: `Welcome back, ${userCredential.user?.email || "User"}!`,
+          text: `Welcome back, ${userCredential.user?.displayName || userCredential.user?.email || "User"}!`,
         });
+
+        navigate("/account");
+
         form.reset();
       })
       .catch((error) => {
