@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import registerAnimation from "../../assets/Lotties/register.json";
 import logoAnimation from "../../assets/Lotties/supper-shop-logo.json";
 import Lottie from "lottie-react";
@@ -8,6 +8,7 @@ import useAuth from "../../Hooks/useAuth";
 
 const Register = () => {
   const { createUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -28,6 +29,7 @@ const Register = () => {
           showConfirmButton: false,
           timer: 1500,
         });
+        navigate("/account");
       })
       .catch((error) => {
         console.log("🚀 ~ handleRegister ~ error:", error);

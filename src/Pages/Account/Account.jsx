@@ -12,12 +12,10 @@ const Account = () => {
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!user?.email) navigate("/login");
   }, [user, navigate]);
 
-  // Fetch existing user data
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -40,45 +38,47 @@ const Account = () => {
     if (user?.email) fetchUser();
   }, [user, reset]);
 
-  const onSubmit = async (formData) => {
-    try {
-      let photoUrl = userData?.photo || "";
+const onSubmit = async (formData) => {
+  try {
+    let photoUrl = userData?.photo || "";
 
-      // Upload photo to imgbb if new file selected
-      if (formData.photo[0]) {
-        const imageForm = new FormData();
-        imageForm.append("image", formData.photo[0]);
+    if (formData.photo[0]) {
+      const imageForm = new FormData();
+      imageForm.append("image", formData.photo[0]);
 
-        const resImg = await fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`, {
-          method: "POST",
-          body: imageForm,
-        });
-        const imgData = await resImg.json();
-        photoUrl = imgData.data.url;
-      }
-
-      const updatedData = {
-        name: formData.name,
-        phone: formData.phone,
-        billingAddress: formData.billingAddress,
-        photo: photoUrl,
-      };
-
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/update-user/${user.email}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
+      const resImg = await fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`, {
+        method: "POST",
+        body: imageForm,
       });
-
-      const result = await res.json();
-      if (result.acknowledged) {
-        Swal.fire("Success", "Profile updated successfully!", "success");
-      }
-    } catch (error) {
-      console.error(error);
-      Swal.fire("Error", "Failed to update profile", "error");
+      const imgData = await resImg.json();
+      photoUrl = imgData.data.url;
     }
-  };
+
+    const updatedData = {
+      name: formData.name,
+      phone: formData.phone,
+      billingAddress: formData.billingAddress,
+      photo: photoUrl,
+    };
+
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/update-user/${user.email}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+
+    const result = await res.json();
+    if (result.acknowledged) {
+      Swal.fire("Success", "Profile updated successfully!", "success").then(() => {
+        navigate('/');
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    Swal.fire("Error", "Failed to update profile", "error");
+  }
+};
+
 
   if (loading) return <p>Loading...</p>;
 

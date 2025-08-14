@@ -11,6 +11,7 @@ import ProductDetails from "../Pages/HomePage/ProductDetails/ProductDetails";
 import WishList from "../Pages/WishList/WishList";
 import DashboardLayout from "../Layout/DashboardLayout/DashboardLayout";
 import Account from "../Pages/Account/Account";
+import MyProfile from "../Pages/Account/MyProfile";
 
 const MainRoute = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ const MainRoute = createBrowserRouter([
     children: [
       { index: true, Component: Home },
       { path: "/add-category", Component: AddCategory },
+      { path: "/my-profile", Component: MyProfile },
       { path: "/all-products", Component: AllProducts },
       { path: "/category/:categoryName", Component: CategoryProducts },
       {

@@ -62,7 +62,7 @@ const TopSection = () => {
 
         {/* Right: Account, Wishlist, Cart */}
         <div className="flex items-center gap-6 text-gray-600 text-sm font-medium">
-          <div className="flex items-center gap-1 cursor-pointer hover:text-primary">
+          <div onClick={()=>navigate('/my-profile')} className="flex items-center gap-1 cursor-pointer hover:text-primary">
             <FiUser className="text-xl" />
             <span>Account</span>
           </div>
