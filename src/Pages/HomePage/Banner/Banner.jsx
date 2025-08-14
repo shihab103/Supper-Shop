@@ -5,19 +5,19 @@ import { Typewriter } from 'react-simple-typewriter';
 const Banner = () => {
   return (
     <div
-      className="min-h-[80vh] flex items-center bg-cover bg-center"
+      className="flex items-center bg-cover bg-right bg-no-repeat"
       style={{
         backgroundImage: `url(${bannerImage})`,
       }}
     >
-      {/* Overlay (optional for better text visibility) */}
-      <div className="bg-black/40 w-full min-h-[80vh] flex items-center">
+      {/* Overlay */}
+      <div className="bg-black/40 lg:max-h-[80vh] h-screen w-full flex items-center py-16 md:py-24 lg:py-32">
         {/* Text Section */}
-        <div className="text-white space-y-6 md:w-1/2 px-4 md:px-10">
-          <h1 className="text-4xl md:text-5xl font-bold">
+        <div className="text-white lg:space-y-4 space-y-2 w-full md:w-1/2 px-4 md:px-10">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
             Welcome to <span className="text-yellow-400">Supper Shop</span>
           </h1>
-          <h2 className="text-2xl md:text-3xl font-semibold">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">
             <span>We provide </span>
             <span className="text-green-300">
               <Typewriter
@@ -31,7 +31,7 @@ const Banner = () => {
               />
             </span>
           </h2>
-          <p className="text-gray-200">
+          <p className="text-gray-200 max-w-lg">
             Everything your kitchen needs – fast, fresh, and at the best price.
           </p>
         </div>

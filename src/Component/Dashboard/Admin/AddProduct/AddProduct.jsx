@@ -9,8 +9,11 @@ const AddProduct = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm();
+
+  const expiryDate = watch("expiryDate"); // expiry date watch
 
   // Fetch categories
   useEffect(() => {
@@ -30,14 +33,14 @@ const AddProduct = () => {
   const onSubmit = async (data) => {
     const imageFile = data.image[0];
 
-    // upload to imgbb
-    const formData = new FormData();
-    formData.append("image", imageFile);
+    // Upload to imgbb
+    const formDataImg = new FormData();
+    formDataImg.append("image", imageFile);
 
     try {
       const resImg = await fetch(
         `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`,
-        { method: "POST", body: formData }
+        { method: "POST", body: formDataImg }
       );
       const imgData = await resImg.json();
       const imageUrl = imgData.data.url;
@@ -55,16 +58,18 @@ const AddProduct = () => {
         categoryId: data.categoryId,
         categoryName: selectedCategory?.name,
         createdAt: new Date(),
+        expiryDate: data.expiryDate ? new Date(data.expiryDate) : null, // expiry date
       };
 
       // Save to database
-      const productRes = await fetch(`${import.meta.env.VITE_API_URL}/add-product`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newProduct),
-      });
+      const productRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/add-product`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newProduct),
+        }
+      );
 
       const result = await productRes.json();
       if (result.insertedId || result.acknowledged) {
@@ -90,7 +95,9 @@ const AddProduct = () => {
             {...register("name", { required: "Product name is required" })}
             className="input input-bordered w-full"
           />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Description */}
@@ -100,7 +107,9 @@ const AddProduct = () => {
             {...register("description", { required: "Description is required" })}
             className="textarea textarea-bordered w-full"
           ></textarea>
-          {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+          {errors.description && (
+            <p className="text-red-500 text-sm">{errors.description.message}</p>
+          )}
         </div>
 
         {/* Price & Stock */}
@@ -113,7 +122,9 @@ const AddProduct = () => {
               {...register("price", { required: "Price is required" })}
               className="input input-bordered w-full"
             />
-            {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
+            {errors.price && (
+              <p className="text-red-500 text-sm">{errors.price.message}</p>
+            )}
           </div>
           <div className="flex-1">
             <label className="block mb-1 font-medium">Stock</label>
@@ -122,8 +133,20 @@ const AddProduct = () => {
               {...register("stock", { required: "Stock is required" })}
               className="input input-bordered w-full"
             />
-            {errors.stock && <p className="text-red-500 text-sm">{errors.stock.message}</p>}
+            {errors.stock && (
+              <p className="text-red-500 text-sm">{errors.stock.message}</p>
+            )}
           </div>
+        </div>
+
+        {/* Expiry Date */}
+        <div>
+          <label className="block mb-1 font-medium">Expiry Date</label>
+          <input
+            type="date"
+            {...register("expiryDate")}
+            className="input input-bordered w-full"
+          />
         </div>
 
         {/* Category */}
@@ -140,7 +163,9 @@ const AddProduct = () => {
               </option>
             ))}
           </select>
-          {errors.categoryId && <p className="text-red-500 text-sm">{errors.categoryId.message}</p>}
+          {errors.categoryId && (
+            <p className="text-red-500 text-sm">{errors.categoryId.message}</p>
+          )}
         </div>
 
         {/* Image Upload */}
@@ -152,7 +177,9 @@ const AddProduct = () => {
             {...register("image", { required: "Image is required" })}
             className="file-input file-input-bordered w-full"
           />
-          {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
+          {errors.image && (
+            <p className="text-red-500 text-sm">{errors.image.message}</p>
+          )}
         </div>
 
         <button type="submit" className="btn btn-primary w-full">

@@ -24,11 +24,15 @@ const Navbar = () => {
         <NavLink to="/add-category">Add Category</NavLink>
       </li>
       <li>
-        <NavLink to="/add-product">Add Product</NavLink>
-      </li>
-      <li>
         <NavLink to="/all-products">All Product</NavLink>
       </li>
+      {
+        user && (
+          <>
+          <NavLink to={'/dashboard'}>Dashboard</NavLink>
+          </>
+        )
+      }
     </>
   );
 
