@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../Context/AuthContext';
 import { useAxiosSecure } from './axiosSecure';
-import { AuthContext } from '../providers/AuthProvider';
 
 const useRole = () => {
   const [role, setRole] = useState('');
+  console.log(role);
   const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecure();
   const { user, loading: authLoading } = useContext(AuthContext);

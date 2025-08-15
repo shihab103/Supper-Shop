@@ -59,6 +59,7 @@ const onSubmit = async (formData) => {
       phone: formData.phone,
       billingAddress: formData.billingAddress,
       photo: photoUrl,
+      role: 'customer'
     };
 
     const res = await fetch(`${import.meta.env.VITE_API_URL}/update-user/${user.email}`, {

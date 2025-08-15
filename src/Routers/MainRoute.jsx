@@ -19,7 +19,7 @@ const MainRoute = createBrowserRouter([
     Component: RootLayout,
     children: [
       { index: true, Component: Home },
-      { path: "/add-category", Component: AddCategory },
+
       { path: "/my-profile", Component: MyProfile },
       { path: "/all-products", Component: AllProducts },
       { path: "/category/:categoryName", Component: CategoryProducts },
@@ -39,7 +39,10 @@ const MainRoute = createBrowserRouter([
   {
     path: "/dashboard",
     Component: DashboardLayout,
-    children: [{ path: "add-product", Component: AddProduct }],
+    children: [
+      { path: "add-product", Component: AddProduct },
+      { path: "add-category", Component: AddCategory },
+    ],
   },
 ]);
 

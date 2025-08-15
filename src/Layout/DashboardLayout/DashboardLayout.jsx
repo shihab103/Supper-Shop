@@ -1,7 +1,10 @@
 import { NavLink, Outlet } from "react-router";
 import ShopLogo from "../Shared/ShopLogo/ShopLogo";
+import useRole from "../../utils/useRole";
 
 const DashboardLayout = () => {
+  const { role } = useRole();
+  console.log(role);
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -40,11 +43,51 @@ const DashboardLayout = () => {
 
       {/* Sidebar */}
       <div className="drawer-side">
-        <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
+        <label
+          htmlFor="my-drawer-2"
+          aria-label="close sidebar"
+          className="drawer-overlay"
+        ></label>
         <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-            <ShopLogo/>
-          <li><NavLink className="mt-5 font-semibold" to="/dashboard">Dashboard Home</NavLink></li>
-          <li><NavLink className={'font-semibold'} to={'/dashboard/add-product'}>Add Product</NavLink></li>
+          <ShopLogo />
+          <li>
+            <NavLink className="mt-5 font-semibold" to="/dashboard">
+              Dashboard Home
+            </NavLink>
+          </li>
+          {/* admin menu */}
+          {role === "admin" && (
+            <>
+              <li>
+                <NavLink
+                  className={"font-semibold"}
+                  to="/dashboard/add-category"
+                >
+                  Add Category
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  className={"font-semibold"}
+                  to={"/dashboard/add-product"}
+                >
+                  Add Product
+                </NavLink>
+              </li>
+            </>
+          )}
+          {role === "customer" && (
+            <>
+              <li>
+                <NavLink
+                  className={"font-semibold"}
+                  to={"/dashboard/add-product"}
+                >
+                  Add Product
+                </NavLink>
+              </li>
+            </>
+          )}
         </ul>
       </div>
     </div>

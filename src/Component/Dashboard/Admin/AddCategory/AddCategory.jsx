@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
 const AddCategory = () => {
+  const navigate  = useNavigate();
   const {
     register,
     handleSubmit,
@@ -51,6 +53,7 @@ const AddCategory = () => {
       });
 
       reset();
+      navigate('/');
     } catch (error) {
       console.error("Error adding category:", error);
       Swal.fire("Error", "Something went wrong", "error");
