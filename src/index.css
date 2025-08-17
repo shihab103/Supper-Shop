@@ -2,10 +2,17 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-/* body{
-    font-family: "Poppins", sans-serif;
-} */
-
 body{
+    font-family: "Poppins", sans-serif;
+    background-color: #f5f4fc;
+}
+
+/* body{
     font-family: "Roboto", sans-serif;
+} */
+.card-bg{
+    background-color: #f3eaf3;
+}
+.btn-bg{
+    background-color: #eed1de;
 }
