@@ -56,17 +56,18 @@ const WishList = () => {
           {wishlistItems.map((item) => (
             <div
               key={item._id}
-              className="card-bg p-4 rounded shadow flex flex-col justify-between relative"
+              className="card-bg p-4 rounded shadow flex flex-col justify-between relative group"
             >
               <img
                 src={item.image}
                 alt={item.name}
                 className="w-full h-40 object-cover rounded"
               />
-              {/* Delete icon */}
+              
+              {/* Delete icon - only show on hover */}
               <button
                 onClick={() => removeFromWishlist(item._id)}
-                className="absolute top-5 right-5 text-gray-400 hover:text-gray-500"
+                className="absolute top-5 right-5 text-gray-400 hover:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 <TrashIcon className="w-6 h-6" />
               </button>

@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Loading from "../../../../Layout/Shared/Loading/Loading";
 import { useNavigate } from "react-router";
+import { FaEye } from "react-icons/fa";
+import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
+import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
+import useAuth from "../../../../Hooks/useAuth";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [wishlist, setWishlist] = useState([]);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   // Fetch all products
@@ -24,12 +30,41 @@ const AllProducts = () => {
     fetchProducts();
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
+  // Fetch wishlist for logged-in user
+  useEffect(() => {
+    if (user?.email) {
+      fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email/${user.email}`)
+        .then((res) => res.json())
+        .then((data) => setWishlist(data.map((p) => p._id)));
+    }
+  }, [user]);
+
+  const isInWishlist = (productId) => wishlist.includes(productId);
+
+  const toggleWishlist = async (productId) => {
+    if (!user?.email) return alert("Please login to use wishlist.");
+
+    if (!isInWishlist(productId)) {
+      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, productId }),
+      });
+      setWishlist([...wishlist, productId]);
+    } else {
+      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, productId }),
+      });
+      setWishlist(wishlist.filter((id) => id !== productId));
+    }
+  };
+
+  if (loading) return <Loading />;
 
   return (
-    <section className="py-12 px-6 md:px-16 bg-gray-50 min-h-screen">
+    <section className="py-12 px-6 md:px-16 bg min-h-screen">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">
         All Products
       </h2>
@@ -38,14 +73,40 @@ const AllProducts = () => {
         {products.map((product) => (
           <div
             key={product._id}
-            className="bg-white shadow-md rounded-xl overflow-hidden transition hover:shadow-lg"
+            className="relative card-bg bg-white px-4 pt-4 shadow-md rounded-xl overflow-hidden transition hover:shadow-lg group"
           >
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
+            <div className="overflow-hidden rounded-t-xl">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-38 object-cover"
+              />
+            </div>
+
+            {/* Overlay with Eye + Heart */}
+            <div className="absolute bottom-40 left-1/2 transform -translate-x-1/2 card-bg px-14 py-2 rounded-t-2xl flex items-center justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 cursor-pointer">
+              {/* Eye button */}
+              <FaEye
+                size={20}
+                className="hover:text-red-500"
+                onClick={() => navigate(`/product/${product._id}`)}
+              />
+
+              {/* Heart button */}
+              {isInWishlist(product._id) ? (
+                <HeartSolid
+                  className="h-5 w-5 text-red-500"
+                  onClick={() => toggleWishlist(product._id)}
+                />
+              ) : (
+                <HeartOutline
+                  className="h-5 w-5 text-gray-400 hover:text-red-500"
+                  onClick={() => toggleWishlist(product._id)}
+                />
+              )}
+            </div>
+
+            <div className=" py-4">
               <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
               <p className="text-sm text-gray-600 mb-1">
                 Price: ৳{product.price}
@@ -53,11 +114,12 @@ const AllProducts = () => {
               <p className="text-sm text-gray-600 mb-3">
                 Stock: {product.stock}
               </p>
+
               <button
-                onClick={() => navigate(`/product/${product._id}`)}
-                className="btn btn-outline btn-primary w-full"
+                className="btn btn-bg w-full"
+                onClick={() => console.log("Add to cart:", product._id)}
               >
-                View Details
+                Add to Cart
               </button>
             </div>
           </div>
