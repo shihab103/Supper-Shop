@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Loading from "../../../../Layout/Shared/Loading/Loading";
+import { useNavigate } from "react-router";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch all products
   useEffect(() => {
@@ -23,7 +25,7 @@ const AllProducts = () => {
   }, []);
 
   if (loading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   return (
@@ -48,8 +50,13 @@ const AllProducts = () => {
               <p className="text-sm text-gray-600 mb-1">
                 Price: ৳{product.price}
               </p>
-              <p className="text-sm text-gray-600 mb-3">Stock: {product.stock}</p>
-              <button className="btn btn-outline btn-primary w-full">
+              <p className="text-sm text-gray-600 mb-3">
+                Stock: {product.stock}
+              </p>
+              <button
+                onClick={() => navigate(`/product/${product._id}`)}
+                className="btn btn-outline btn-primary w-full"
+              >
                 View Details
               </button>
             </div>

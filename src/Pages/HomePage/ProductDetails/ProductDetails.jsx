@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Loading from "../../../Layout/Shared/Loading/Loading";
 import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 import { StarIcon } from "@heroicons/react/24/solid";
 import useAuth from "../../../Hooks/useAuth";
+import Rating from "react-rating";
+
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -17,6 +19,7 @@ const ProductDetails = () => {
   const [myReview, setMyReview] = useState("");
   const [myRating, setMyRating] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch product, related products, reviews
   useEffect(() => {
@@ -190,18 +193,16 @@ const ProductDetails = () => {
                 className="mb-6 flex flex-col gap-2"
               >
                 <label className="font-semibold">Your Rating:</label>
-                <select
-                  value={myRating}
-                  onChange={(e) => setMyRating(Number(e.target.value))}
-                  className="select select-bordered w-full"
-                >
-                  <option value={0}>Select Rating</option>
-                  {[5, 4, 3, 2, 1].map((r) => (
-                    <option key={r} value={r}>
-                      {r} Star
-                    </option>
-                  ))}
-                </select>
+                <Rating
+                  initialRating={myRating}
+                  onChange={(value) => setMyRating(value)}
+                  emptySymbol={
+                    <span className="text-3xl text-gray-400">☆</span>
+                  }
+                  fullSymbol={
+                    <span className="text-3xl text-yellow-500">★</span>
+                  }
+                />
                 <textarea
                   value={myReview}
                   onChange={(e) => setMyReview(e.target.value)}
@@ -257,6 +258,7 @@ const ProductDetails = () => {
               <div
                 key={rp._id}
                 className="border p-2 rounded shadow-sm flex flex-col justify-between h-50"
+                onClick={() => navigate(`/product/${rp._id}`)}
               >
                 <img
                   src={rp.image}
