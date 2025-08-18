@@ -12,6 +12,7 @@ import WishList from "../Pages/WishList/WishList";
 import DashboardLayout from "../Layout/DashboardLayout/DashboardLayout";
 import Account from "../Pages/Account/Account";
 import MyProfile from "../Pages/Account/MyProfile";
+import AllReview from "../Component/Dashboard/Admin/AllReview/AllReview";
 
 const MainRoute = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const MainRoute = createBrowserRouter([
     children: [
       { path: "add-product", Component: AddProduct },
       { path: "add-category", Component: AddCategory },
+      { path: "all-review", Component: AllReview },
     ],
   },
 ]);
