@@ -61,7 +61,7 @@ const AddCategory = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded shadow-md my-10">
+    <div className="max-w-md mx-auto card-bg p-6 rounded shadow-md my-10">
       <h2 className="text-2xl font-bold mb-4">Add New Category</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -93,7 +93,7 @@ const AddCategory = () => {
           )}
         </div>
 
-        <button type="submit" className="btn btn-primary w-full">
+        <button type="submit" className="btn btn-bg w-full">
           Add Category
         </button>
       </form>

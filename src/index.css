@@ -9,6 +9,10 @@ body{
 .bg{
     background-color: #e4d2e6;
 }
+.bg-bar{
+    background-color: #e1cbe3;
+}
+
 .card-bg{
     background-color: #f4e3f4;
 }

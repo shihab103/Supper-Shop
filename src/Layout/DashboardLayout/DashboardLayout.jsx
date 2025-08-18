@@ -8,7 +8,7 @@ const DashboardLayout = () => {
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col">
+      <div className="drawer-content bg flex flex-col">
         {/* Navbar for small devices */}
         <div className="navbar bg-base-300 lg:hidden w-full">
           <div className="flex-none">
@@ -36,19 +36,19 @@ const DashboardLayout = () => {
         </div>
 
         {/* Page content */}
-        <div>
+        <div className="bg">
           <Outlet />
         </div>
       </div>
 
       {/* Sidebar */}
-      <div className="drawer-side">
+      <div className="drawer-side shadow-2xl">
         <label
           htmlFor="my-drawer-2"
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+        <ul className="menu bg-bar p-4 w-80 min-h-full bg-base-200 text-base-content">
           <ShopLogo />
           <li>
             <NavLink className="mt-5 font-semibold" to="/dashboard">

@@ -66,7 +66,7 @@ const MyProfile = () => {
 
           {/* Edit Button */}
           <div className="card-actions justify-end mt-6">
-            <button className="btn btn-primary">Edit Profile</button>
+            <button className="btn btn-bg">Edit Profile</button>
           </div>
         </div>
       </div>

@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Loading from "../../../Layout/Shared/Loading/Loading";
 import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
-import { StarIcon } from "@heroicons/react/24/solid";
+import { HeartIcon as HeartSolid, StarIcon } from "@heroicons/react/24/solid";
 import useAuth from "../../../Hooks/useAuth";
 import Rating from "react-rating";
-
+import { toast } from "react-hot-toast";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -25,29 +24,28 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/product/${id}`
-        );
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/product/${id}`);
         const data = await res.json();
         setProduct(data);
 
+        // Related products
         const relatedRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/products-by-category/${
-            data.categoryId
-          }`
+          `${import.meta.env.VITE_API_URL}/products-by-category/${data.categoryId}`
         );
         const relatedData = await relatedRes.json();
         setRelatedProducts(
           relatedData.filter((p) => p._id !== data._id).slice(0, 4)
         );
 
+        // Reviews
         const reviewRes = await fetch(
           `${import.meta.env.VITE_API_URL}/reviews/${id}`
         );
         const reviewData = await reviewRes.json();
         setReviews(reviewData);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching product:", err);
+        toast.error("Failed to load product details.");
       } finally {
         setLoading(false);
       }
@@ -60,29 +58,48 @@ const ProductDetails = () => {
     if (user?.email) {
       fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email/${user.email}`)
         .then((res) => res.json())
-        .then((data) => setWishlist(data.map((p) => p._id)));
+        .then((data) => setWishlist(data.map((p) => p._id)))
+        .catch(() => toast.error("Failed to load wishlist"));
     }
   }, [user]);
 
   const isInWishlist = product ? wishlist.includes(product._id) : false;
 
   const toggleWishlist = async () => {
-    if (!user?.email) return alert("Please login to use wishlist.");
-
-    if (!isInWishlist) {
-      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, productId: product._id }),
-      });
-      setWishlist([...wishlist, product._id]);
-    } else {
-      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, productId: product._id }),
-      });
-      setWishlist(wishlist.filter((id) => id !== product._id));
+    if (!user?.email) {
+      return toast.error("Please login to use wishlist.");
+    }
+    try {
+      if (!isInWishlist) {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/wishlist-by-email`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: user.email, productId: product._id }),
+          }
+        );
+        if (res.ok) {
+          setWishlist([...wishlist, product._id]);
+          toast.success("Added to wishlist ❤️");
+        }
+      } else {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/wishlist-by-email`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: user.email, productId: product._id }),
+          }
+        );
+        if (res.ok) {
+          setWishlist(wishlist.filter((id) => id !== product._id));
+          toast.success("Removed from wishlist ❌");
+        }
+      }
+    } catch (error) {
+      console.error("Wishlist error:", error);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -91,14 +108,15 @@ const ProductDetails = () => {
     if (user?.email) {
       fetch(`${import.meta.env.VITE_API_URL}/user/${user.email}`)
         .then((res) => res.json())
-        .then((data) => setUserInfo(data));
+        .then((data) => setUserInfo(data))
+        .catch(() => toast.error("Failed to load user info"));
     }
   }, [user]);
 
   const submitReview = async (e) => {
     e.preventDefault();
-    if (!user?.email) return alert("Please login to review.");
-    if (!userInfo) return alert("User info not loaded yet.");
+    if (!user?.email) return toast.error("Please login to review.");
+    if (!userInfo) return toast.error("User info not loaded yet.");
 
     const reviewObj = {
       productId: product._id,
@@ -111,16 +129,58 @@ const ProductDetails = () => {
       date: new Date(),
     };
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(reviewObj),
-    });
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reviewObj),
+      });
 
-    if (res.ok) {
-      setReviews([...reviews, reviewObj]);
-      setMyReview("");
-      setMyRating(0);
+      if (res.ok) {
+        setReviews([...reviews, reviewObj]);
+        setMyReview("");
+        setMyRating(0);
+        toast.success("Review submitted ✅");
+      } else {
+        toast.error("Failed to submit review");
+      }
+    } catch (error) {
+      console.error("Review error:", error);
+      toast.error("Something went wrong!");
+    }
+  };
+
+  const addToCart = async () => {
+    if (!user?.email) return toast.error("Please login first.");
+    if (!userInfo) return toast.error("User info not loaded yet.");
+
+    const cartItem = {
+      productId: product._id,
+      productName: product.name,
+      productImage: product.image,
+      price: product.price,
+      quantity: 1,
+      userId: userInfo._id,
+      userEmail: userInfo.email,
+      date: new Date(),
+      status: "pending",
+    };
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/add-to-cart`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cartItem),
+      });
+      if (res.ok) {
+        toast.success("Product added to cart 🛒");
+      } else if (res.status === 409) {
+        toast.error("Already in cart");
+      } else {
+        toast.error("Failed to add product to cart.");
+      }
+    } catch (error) {
+      console.error("Cart error:", error);
+      toast.error("Something went wrong.");
     }
   };
 
@@ -128,13 +188,13 @@ const ProductDetails = () => {
   if (!product) return <p className="text-center mt-10">Product not found</p>;
 
   return (
-    <section className="max-w-7xl mx-auto p-6 bg-white rounded shadow my-10">
+    <section className="max-w-7xl mx-auto p-6 bg rounded shadow">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left: Product Info + Reviews */}
         <div className="lg:w-2/3 flex flex-col gap-5">
           <h1 className="text-center font-bold text-xl">Product Details</h1>
 
-          <div className="flex flex-col md:flex-row gap-4 p-3 border rounded shadow-sm relative">
+          <div className="flex card-bg flex-col md:flex-row gap-4 p-3 rounded shadow-xl relative">
             <img
               src={product.image}
               alt={product.name}
@@ -159,7 +219,8 @@ const ProductDetails = () => {
                 <p>Category: {product.categoryName}</p>
                 {product.createdAt && (
                   <p>
-                    Added on: {new Date(product.createdAt).toLocaleDateString()}
+                    Added on:{" "}
+                    {new Date(product.createdAt).toLocaleDateString()}
                   </p>
                 )}
                 {product.expiryDate && (
@@ -168,7 +229,9 @@ const ProductDetails = () => {
                   </p>
                 )}
               </div>
-              <button className="btn btn-primary mt-3">Add to Cart</button>
+              <button onClick={addToCart} className="btn btn-bg mt-3">
+                Add to Cart
+              </button>
             </div>
           </div>
 
@@ -206,11 +269,11 @@ const ProductDetails = () => {
                 <textarea
                   value={myReview}
                   onChange={(e) => setMyReview(e.target.value)}
-                  className="textarea textarea-bordered w-full"
+                  className="textarea textarea-bordered card-bg w-full"
                   placeholder="Write your review..."
                   required
                 />
-                <button className="btn btn-primary w-full sm:w-auto">
+                <button className="btn btn-bg shadow border-0 w-full sm:w-auto">
                   Submit Review
                 </button>
               </form>
@@ -234,7 +297,9 @@ const ProductDetails = () => {
                         <StarIcon
                           key={i}
                           className={`w-4 h-4 ${
-                            i < rev.rating ? "text-yellow-500" : "text-gray-300"
+                            i < rev.rating
+                              ? "text-yellow-500"
+                              : "text-gray-300"
                           }`}
                         />
                       ))}
@@ -257,7 +322,7 @@ const ProductDetails = () => {
             {relatedProducts.map((rp) => (
               <div
                 key={rp._id}
-                className="border p-2 rounded shadow-sm flex flex-col justify-between h-50"
+                className="card-bg p-2 rounded shadow-xl flex flex-col justify-between h-50 cursor-pointer"
                 onClick={() => navigate(`/product/${rp._id}`)}
               >
                 <img
