@@ -81,7 +81,7 @@ const CategoryProducts = () => {
   if (loading) return <Loading />;
 
   return (
-    <section className="py-12 px-6 md:px-16 bg-gray-50 min-h-screen">
+    <section className="py-12 px-6 md:px-16 bg min-h-screen">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">
         Products in "{products[0]?.categoryName || "Selected Category"}"
       </h2>
@@ -93,7 +93,7 @@ const CategoryProducts = () => {
           {products.map((product) => (
             <div
               key={product._id}
-              className="relative rounded-lg shadow-md p-4 bg-white flex flex-col justify-between"
+              className="relative rounded-lg shadow-md p-4 card-bg flex flex-col justify-between"
             >
               {/* Wishlist Icon */}
               <button
@@ -119,10 +119,10 @@ const CategoryProducts = () => {
                   Available: {product.stock} pcs
                 </p>
                 <div className="flex justify-between gap-2">
-                  <button className="btn btn-sm btn-success">Add</button>
+                  <button className="btn btn-sm btn-outline hover:bg-[#eed1de]">Add</button>
                   <button
                     onClick={() => navigate(`/product/${product._id}`)}
-                    className="btn btn-sm btn-primary"
+                    className="btn btn-sm btn-bg"
                   >
                     View Details
                   </button>

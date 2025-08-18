@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useAuth from "../../Hooks/useAuth";
 import { useNavigate } from "react-router";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import Loading from "../../Layout/Shared/Loading/Loading";
 
 const WishList = () => {
   const { user } = useAuth();
@@ -44,10 +45,10 @@ const WishList = () => {
   };
 
   if (!email) return <p className="p-6">Please login to view your wishlist.</p>;
-  if (loading) return <p className="p-6">Loading...</p>;
+  if (loading) return <Loading/>;
 
   return (
-    <section className="p-6">
+    <section className="p-6 bg">
       <h2 className="text-2xl font-bold mb-4">My Wishlist</h2>
       {wishlistItems.length === 0 ? (
         <p>No items in wishlist.</p>

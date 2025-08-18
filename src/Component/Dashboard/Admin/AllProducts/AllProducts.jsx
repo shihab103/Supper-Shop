@@ -73,7 +73,7 @@ const AllProducts = () => {
         {products.map((product) => (
           <div
             key={product._id}
-            className="relative card-bg bg-white px-4 pt-4 shadow-md rounded-xl overflow-hidden transition hover:shadow-lg group"
+            className="relative card-bg bg-white px-4 pt-4 shadow-md rounded-2xl overflow-hidden transition hover:shadow-lg group"
           >
             <div className="overflow-hidden rounded-t-xl">
               <img

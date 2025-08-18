@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useAuth from "../../Hooks/useAuth";
+import Loading from "../../Layout/Shared/Loading/Loading";
 
 const MyProfile = () => {
   const { user, loading } = useAuth();
@@ -27,11 +28,7 @@ const MyProfile = () => {
   }, [user?.email]);
 
   if (loading || isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
+    return <Loading/>
   }
 
   if (!profile) {
@@ -39,8 +36,8 @@ const MyProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-base-200 flex justify-center items-center p-4">
-      <div className="card w-full max-w-3xl bg-base-100 shadow-xl">
+    <div className="min-h-screen bg flex justify-center items-center p-4">
+      <div className="card w-full max-w-3xl card-bg shadow-xl">
         <div className="card-body">
           {/* Profile Header */}
           <div className="flex items-center gap-6">
@@ -61,7 +58,7 @@ const MyProfile = () => {
           {/* Address */}
           <div>
             <h3 className="text-xl font-semibold mb-2">Billing Address</h3>
-            <p className="whitespace-pre-line bg-base-200 p-3 rounded-lg">
+            <p className="whitespace-pre-line btn-bg p-3 rounded-lg">
               {profile.billingAddress}
             </p>
           </div>
