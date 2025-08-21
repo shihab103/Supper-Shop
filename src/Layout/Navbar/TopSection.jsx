@@ -70,7 +70,7 @@ const TopSection = () => {
             <FiHeart className="text-xl" />
             <span>Wishlist</span>
           </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:text-primary">
+          <div onClick={()=>navigate('/cart')} className="flex items-center gap-1 cursor-pointer hover:text-primary">
             <FiShoppingCart className="text-xl" />
             <span>Cart</span>
           </div>

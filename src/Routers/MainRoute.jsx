@@ -13,6 +13,7 @@ import DashboardLayout from "../Layout/DashboardLayout/DashboardLayout";
 import Account from "../Pages/Account/Account";
 import MyProfile from "../Pages/Account/MyProfile";
 import AllReview from "../Component/Dashboard/Admin/AllReview/AllReview";
+import Cart from "../Pages/cart/Cart";
 
 const MainRoute = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const MainRoute = createBrowserRouter([
       {
         path: "/wishlist",
         Component: WishList,
+      },
+      {
+        path: "/cart",
+        Component: Cart,
       },
     ],
   },

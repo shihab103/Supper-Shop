@@ -1,11 +1,10 @@
 import { Link, useNavigate } from "react-router";
 import loginAnimation from "../../assets/Lotties/Login.json";
-import logoAnimation from "../../assets/Lotties/supper-shop-logo.json";
 import Lottie from "lottie-react";
 import { AuthContext } from "../../Context/AuthContext";
 import Swal from "sweetalert2";
-import { Typewriter } from "react-simple-typewriter";
 import useAuth from "../../Hooks/useAuth";
+import ShopLogo from "../../Layout/Shared/ShopLogo/ShopLogo";
 
 const Login = () => {
   const {signIn} = useAuth();
@@ -45,39 +44,7 @@ const Login = () => {
         {/* Left: Login Form */}
         <div className="w-full md:w-1/2 p-8">
           {/* Logo + Title */}
-          <Link
-            to="/"
-            className="fixed top-4 left-6 flex items-center space-x-3 select-none z-50"
-          >
-            <div className="w-14 h-14">
-              <Lottie animationData={logoAnimation} loop={true} />
-            </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold flex items-center space-x-1">
-              <span className="text-orange-500">
-                <Typewriter
-                  words={["Supper"]}
-                  loop={1}
-                  cursor
-                  cursorStyle="|"
-                  typeSpeed={120}
-                  deleteSpeed={50}
-                  delaySpeed={1000}
-                />
-              </span>
-              <span>&nbsp;</span>
-              <span className="text-purple-600">
-                <Typewriter
-                  words={["Shop"]}
-                  loop={1}
-                  cursor={false}
-                  typeSpeed={120}
-                  deleteSpeed={50}
-                  delaySpeed={2500}
-                />
-              </span>
-            </h2>
-          </Link>
-
+          <ShopLogo/>
           <h1 className="text-4xl font-bold text-center mb-6">Login now!</h1>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>

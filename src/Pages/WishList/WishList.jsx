@@ -45,7 +45,7 @@ const WishList = () => {
   };
 
   if (!email) return <p className="p-6">Please login to view your wishlist.</p>;
-  if (loading) return <Loading/>;
+  if (loading) return <Loading />;
 
   return (
     <section className="p-6 bg">
@@ -64,7 +64,7 @@ const WishList = () => {
                 alt={item.name}
                 className="w-full h-40 object-cover rounded"
               />
-              
+
               {/* Delete icon - only show on hover */}
               <button
                 onClick={() => removeFromWishlist(item._id)}
