@@ -1,8 +1,9 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import img1 from "../../assets/Photos/about/about1.jpg";
 import img2 from "../../assets/Photos/about/about2.jpg";
 import { FaShippingFast, FaDollarSign, FaHeadset } from "react-icons/fa";
+import OurTeam from "./OurTeam";
 
 const About = () => {
   const services = [
@@ -31,16 +32,13 @@ const About = () => {
 
   return (
     <div className="bg py-12 px-6 lg:px-20">
-      {/* About Header */}
+      {/* ------------------ About Us Section ------------------ */}
       <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
         About Us
       </h2>
 
-      {/* Content Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        {/* Left Side Images */}
         <div className="relative w-full flex justify-center">
-          {/* Left Image */}
           <motion.img
             src={img1}
             alt="About Left"
@@ -50,7 +48,6 @@ const About = () => {
             transition={{ duration: 5, repeat: Infinity }}
           />
 
-          {/* Right Image */}
           <motion.img
             src={img2}
             alt="About Right"
@@ -61,7 +58,6 @@ const About = () => {
           />
         </div>
 
-        {/* Right Side Text */}
         <div>
           <h3 className="text-2xl font-semibold text-gray-700 mb-4">
             Welcome to Supper Shop
@@ -78,7 +74,7 @@ const About = () => {
         </div>
       </div>
 
-      {/* ------------------ We Do Section ------------------ */}
+      {/* ------------------ We Are Trusted by Clients ------------------ */}
       <div className="bg-gray-100 py-16 px-6 lg:px-20 mt-20 rounded-3xl">
         <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
           We are Trusted by Clients
@@ -103,6 +99,7 @@ const About = () => {
           ))}
         </div>
       </div>
+      <OurTeam/>
     </div>
   );
 };

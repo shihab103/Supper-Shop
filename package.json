@@ -27,6 +27,7 @@
     "react-simple-typewriter": "^5.0.1",
     "router": "^2.2.0",
     "sweetalert2": "^11.22.2",
+    "swiper": "^11.2.10",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.11"
   },
