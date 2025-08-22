@@ -14,6 +14,7 @@ import Account from "../Pages/Account/Account";
 import MyProfile from "../Pages/Account/MyProfile";
 import AllReview from "../Component/Dashboard/Admin/AllReview/AllReview";
 import Cart from "../Pages/cart/Cart";
+import About from "../Pages/About/About";
 
 const MainRoute = createBrowserRouter([
   {
@@ -21,8 +22,8 @@ const MainRoute = createBrowserRouter([
     Component: RootLayout,
     children: [
       { index: true, Component: Home },
-
       { path: "/my-profile", Component: MyProfile },
+      { path: "/about", Component: About },
       { path: "/all-products", Component: AllProducts },
       { path: "/category/:categoryName", Component: CategoryProducts },
       {

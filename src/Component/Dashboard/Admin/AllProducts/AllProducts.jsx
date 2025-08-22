@@ -5,6 +5,8 @@ import { FaEye } from "react-icons/fa";
 import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 import useAuth from "../../../../Hooks/useAuth";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -42,7 +44,7 @@ const AllProducts = () => {
   const isInWishlist = (productId) => wishlist.includes(productId);
 
   const toggleWishlist = async (productId) => {
-    if (!user?.email) return alert("Please login to use wishlist.");
+    if (!user?.email) return toast.error("Please login to use wishlist.");
 
     if (!isInWishlist(productId)) {
       await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
@@ -51,6 +53,7 @@ const AllProducts = () => {
         body: JSON.stringify({ email: user.email, productId }),
       });
       setWishlist([...wishlist, productId]);
+      toast.success("Added to wishlist"); 
     } else {
       await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
         method: "DELETE",
@@ -58,13 +61,40 @@ const AllProducts = () => {
         body: JSON.stringify({ email: user.email, productId }),
       });
       setWishlist(wishlist.filter((id) => id !== productId));
+      toast.success("Removed from wishlist");
+    }
+  };
+
+  // Add to Cart function
+  const handleAddToCart = async (product) => {
+    if (!user?.email) return toast.error("Please login to add to cart.");
+
+    const cartData = {
+      productId: product._id,
+      productName: product.name,
+      productImage: product.image,
+      price: product.price,
+      quantity: 1,
+      userEmail: user.email,
+      date: new Date().toISOString(),
+      status: "pending",
+    };
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/add-to-cart`, cartData);
+      toast.success(`${product.name} added to cart`);
+    } catch (err) {
+      console.error("Add to cart error:", err);
+      toast.error("Failed to add to cart");
     }
   };
 
   if (loading) return <Loading />;
 
   return (
-    <section className="py-12 px-6 md:px-16 bg min-h-screen">
+    <section className="py-12 px-6 md:px-16 bg min-h-screen relative">
+      <Toaster position="top-right" reverseOrder={false} />
+
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">
         All Products
       </h2>
@@ -85,14 +115,11 @@ const AllProducts = () => {
 
             {/* Overlay with Eye + Heart */}
             <div className="absolute bottom-40 left-1/2 transform -translate-x-1/2 card-bg px-14 py-2 rounded-t-2xl flex items-center justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 cursor-pointer">
-              {/* Eye button */}
               <FaEye
                 size={20}
                 className="hover:text-red-500"
                 onClick={() => navigate(`/product/${product._id}`)}
               />
-
-              {/* Heart button */}
               {isInWishlist(product._id) ? (
                 <HeartSolid
                   className="h-5 w-5 text-red-500"
@@ -106,18 +133,14 @@ const AllProducts = () => {
               )}
             </div>
 
-            <div className=" py-4">
+            <div className="py-4">
               <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
-              <p className="text-sm text-gray-600 mb-1">
-                Price: ৳{product.price}
-              </p>
-              <p className="text-sm text-gray-600 mb-3">
-                Stock: {product.stock}
-              </p>
+              <p className="text-sm text-gray-600 mb-1">Price: ৳{product.price}</p>
+              <p className="text-sm text-gray-600 mb-3">Stock: {product.stock}</p>
 
               <button
                 className="btn btn-bg w-full"
-                onClick={() => console.log("Add to cart:", product._id)}
+                onClick={() => handleAddToCart(product)}
               >
                 Add to Cart
               </button>
