@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import img1 from "../../assets/Photos/about/about1.jpg";
 import img2 from "../../assets/Photos/about/about2.jpg";
 import { FaShippingFast, FaDollarSign, FaHeadset } from "react-icons/fa";

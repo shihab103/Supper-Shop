@@ -2,12 +2,15 @@ import React from "react";
 import member1 from "../../assets/Photos/about/member1.jpg";
 import { FaFacebookF, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 
+// Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 
-import { Pagination, Autoplay } from "swiper/modules";
+// modules
+import { EffectCoverflow, Pagination, Autoplay } from "swiper/modules";
 
 const OurTeam = () => {
   const memberData = [
@@ -50,7 +53,6 @@ const OurTeam = () => {
       image: member1,
       social: { facebook: "#", linkedin: "#", twitter: "#" },
     },
-    // আরও member add করতে পারেন
   ];
 
   return (
@@ -60,28 +62,37 @@ const OurTeam = () => {
       </h2>
 
       <Swiper
-        slidesPerView={3} // সবসময় 3 card
-        spaceBetween={30} // card এর মধ্যে gap
-        loop={true} // infinite loop
+        effect={"coverflow"}
+        grabCursor={true}
+        centeredSlides={true}
+        loop={true}
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
         }}
-        slideToClickedSlide={true} // click করলে center এ আসবে
+        coverflowEffect={{
+          rotate: 30,
+          stretch: 0,
+          depth: 100,
+          modifier: 1,
+          slideShadows: true,
+        }}
         pagination={{ clickable: true }}
-        modules={[Pagination, Autoplay]}
-        className="mySwiper"
-        centeredSlides={false} // extra card দেখা যাবে না
+        modules={[EffectCoverflow, Pagination, Autoplay]}
+        className="mySwiper max-w-[1100px] mx-auto" // ✅ container এর max width সেট
+        slidesPerView={"auto"} // ✅ auto view
+        spaceBetween={30}
       >
         {memberData.map((member, index) => (
           <SwiperSlide
             key={index}
-            className="bg-gray-100 rounded-2xl p-6 flex flex-col items-center text-center shadow-lg"
+            className="bg-gray-100 rounded-2xl p-6 flex flex-col items-center text-center shadow-lg w-[300px] max-w-[320px]" 
+            // ✅ card এর max width fix করা হলো
           >
             <img
               src={member.image}
               alt={member.name}
-              className="w-24 h-24 object-cover rounded-full mb-4 shadow-lg"
+              className="w-28 h-28 object-cover rounded-full mb-4 shadow-lg"
             />
             <h3 className="text-xl font-semibold">{member.name}</h3>
             <p className="text-gray-500 mb-1">{member.role}</p>
