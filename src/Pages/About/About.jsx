@@ -37,7 +37,7 @@ const About = () => {
       </h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div className="relative w-full flex justify-center">
+        <div className="relative w-full flex justify-center mt-25 lg:mt-0 order-1 lg:order-1">
           <motion.img
             src={img1}
             alt="About Left"
@@ -57,7 +57,7 @@ const About = () => {
           />
         </div>
 
-        <div>
+        <div className="order-2 lg:order-2 mt-42 lg:mt-0">
           <h3 className="text-2xl font-semibold text-gray-700 mb-4">
             Welcome to Supper Shop
           </h3>
@@ -98,7 +98,7 @@ const About = () => {
           ))}
         </div>
       </div>
-      <OurTeam/>
+      <OurTeam />
     </div>
   );
 };

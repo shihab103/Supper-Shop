@@ -79,15 +79,14 @@ const OurTeam = () => {
         }}
         pagination={{ clickable: true }}
         modules={[EffectCoverflow, Pagination, Autoplay]}
-        className="mySwiper max-w-[1100px] mx-auto" // ✅ container এর max width সেট
-        slidesPerView={"auto"} // ✅ auto view
+        className="mySwiper max-w-[1100px] mx-auto"
+        slidesPerView={"auto"} 
         spaceBetween={30}
       >
         {memberData.map((member, index) => (
           <SwiperSlide
             key={index}
             className="bg-gray-100 rounded-2xl p-6 flex flex-col items-center text-center shadow-lg w-[300px] max-w-[320px]" 
-            // ✅ card এর max width fix করা হলো
           >
             <img
               src={member.image}
