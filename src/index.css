@@ -19,3 +19,12 @@ body{
 .btn-bg{
     background-color: #eed1de;
 }
+
+/* blue theme */
+
+.primary{
+    background-color: #669295;
+}
+.secondary{
+    background-color: #cfe1e5;
+}

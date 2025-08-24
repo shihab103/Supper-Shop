@@ -105,7 +105,7 @@ const CategoryProducts = () => {
           {products.map((product) => (
             <div
               key={product._id}
-              className="relative card-bg bg-white px-4 pt-4 shadow-md rounded-2xl overflow-hidden transition hover:shadow-lg group"
+              className="relative card-bg secondary px-4 pt-4 shadow-md rounded-2xl overflow-hidden transition hover:shadow-lg group"
             >
               <div className="overflow-hidden rounded-t-xl">
                 <img
@@ -116,7 +116,7 @@ const CategoryProducts = () => {
               </div>
 
               {/* Overlay with Eye + Heart */}
-              <div className="absolute bottom-40 left-1/2 transform -translate-x-1/2 card-bg px-14 py-2 rounded-t-2xl flex items-center justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 cursor-pointer">
+              <div className="absolute bottom-40 left-1/2 transform -translate-x-1/2 secondary px-14 py-2 rounded-t-2xl flex items-center justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 cursor-pointer">
                 <FaEye
                   size={20}
                   className="hover:text-red-500"
@@ -137,11 +137,15 @@ const CategoryProducts = () => {
 
               <div className="py-4">
                 <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
-                <p className="text-sm text-gray-600 mb-1">Price: ৳{product.price}</p>
-                <p className="text-sm text-gray-600 mb-3">Stock: {product.stock}</p>
+                <p className="text-sm text-gray-600 mb-1">
+                  Price: ৳{product.price}
+                </p>
+                <p className="text-sm text-gray-600 mb-3">
+                  Stock: {product.stock}
+                </p>
 
                 <button
-                  className="btn btn-bg w-full"
+                  className="btn primary text-white w-full"
                   onClick={() => handleAddToCart(product)}
                 >
                   Add to Cart

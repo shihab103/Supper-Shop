@@ -41,7 +41,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="navbar bg-gray-200 shadow-sm px-4">
+    <div className="navbar text-white primary shadow-sm px-4">
       {/* Navbar Start */}
       <div className="navbar-start flex items-center gap-2">
         {/* Mobile Dropdown Button */}
@@ -77,7 +77,7 @@ const Navbar = () => {
       {/* Navbar End */}
       <div className="navbar-end">
         {user ? (
-          <button onClick={handleLogout} className="btn">
+          <button onClick={handleLogout} className="btn secondary shadow-none">
             Log Out
           </button>
         ) : (
