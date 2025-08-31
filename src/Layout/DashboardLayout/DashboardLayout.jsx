@@ -77,6 +77,14 @@ const DashboardLayout = () => {
               <li>
                 <NavLink
                   className={"font-semibold"}
+                  to="/dashboard/all-user"
+                >
+                  All User
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  className={"font-semibold"}
                   to={"/dashboard/add-product"}
                 >
                   Add Product

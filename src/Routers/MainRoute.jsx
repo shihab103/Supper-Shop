@@ -17,6 +17,7 @@ import Cart from "../Pages/cart/Cart";
 import About from "../Pages/About/About";
 import ContactUs from "../Pages/ContactUs/ContactUs";
 import AdminDashboardHome from "../Component/Dashboard/Admin/AdminDashboardHome/AdminDashboardHome";
+import AllUser from "../Component/Dashboard/Admin/AllUser/AllUser";
 
 const MainRoute = createBrowserRouter([
   {
@@ -54,6 +55,7 @@ const MainRoute = createBrowserRouter([
       { path: "add-product", Component: AddProduct },
       { path: "add-category", Component: AddCategory },
       { path: "all-review", Component: AllReview },
+      { path: "all-user", Component: AllUser },
     ],
   },
 ]);
