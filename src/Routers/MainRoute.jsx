@@ -16,6 +16,7 @@ import AllReview from "../Component/Dashboard/Admin/AllReview/AllReview";
 import Cart from "../Pages/cart/Cart";
 import About from "../Pages/About/About";
 import ContactUs from "../Pages/ContactUs/ContactUs";
+import AdminDashboardHome from "../Component/Dashboard/Admin/AdminDashboardHome/AdminDashboardHome";
 
 const MainRoute = createBrowserRouter([
   {
@@ -49,6 +50,7 @@ const MainRoute = createBrowserRouter([
     path: "/dashboard",
     Component: DashboardLayout,
     children: [
+      {index: true,Component: AdminDashboardHome},
       { path: "add-product", Component: AddProduct },
       { path: "add-category", Component: AddCategory },
       { path: "all-review", Component: AllReview },
