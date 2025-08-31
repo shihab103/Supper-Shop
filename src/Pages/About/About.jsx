@@ -3,6 +3,7 @@ import img1 from "../../assets/Photos/about/about1.jpg";
 import img2 from "../../assets/Photos/about/about2.jpg";
 import { FaShippingFast, FaDollarSign, FaHeadset } from "react-icons/fa";
 import OurTeam from "./OurTeam";
+import Testimonials from "./testimonials";
 
 const About = () => {
   const services = [
@@ -74,7 +75,7 @@ const About = () => {
       </div>
 
       {/* ------------------ We Are Trusted by Clients ------------------ */}
-      <div className="bg-gray-100 py-16 px-6 lg:px-20 mt-20 rounded-3xl">
+      <div className=" py-16 px-6 lg:px-20 mt-20 rounded-3xl">
         <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
           We are Trusted by Clients
         </h2>
@@ -83,7 +84,7 @@ const About = () => {
           {services.map((service, index) => (
             <motion.div
               key={index}
-              className="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
+              className="flex flex-col items-center text-center p-6 secondary rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
               whileHover={{ y: -10 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
@@ -99,6 +100,7 @@ const About = () => {
         </div>
       </div>
       <OurTeam />
+      <Testimonials/>
     </div>
   );
 };

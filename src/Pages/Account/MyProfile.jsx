@@ -38,13 +38,13 @@ const MyProfile = () => {
   return (
     <div className="min-h-screen bg flex justify-center items-center p-4">
       <div className="card w-full max-w-3xl card-bg shadow-xl">
-        <div className="card-body">
+        <div className="card-body secondary">
           {/* Profile Header */}
           <div className="flex items-center gap-6">
             <img
               src={profile.photo}
               alt={profile.name}
-              className="w-28 h-28 rounded-full border-4 border-primary object-cover"
+              className="w-28 h-28 rounded-full border-4 border-[#669295] object-cover"
             />
             <div>
               <h2 className="text-3xl font-bold">{profile.name}</h2>
@@ -58,7 +58,7 @@ const MyProfile = () => {
           {/* Address */}
           <div>
             <h3 className="text-xl font-semibold mb-2">Billing Address</h3>
-            <p className="whitespace-pre-line btn-bg p-3 rounded-lg">
+            <p className="whitespace-pre-line bg p-3 rounded-lg">
               {profile.billingAddress}
             </p>
           </div>
@@ -66,7 +66,7 @@ const MyProfile = () => {
 
           {/* Edit Button */}
           <div className="card-actions justify-end mt-6">
-            <button className="btn btn-bg">Edit Profile</button>
+            <button className="btn primary text-white">Edit Profile</button>
           </div>
         </div>
       </div>

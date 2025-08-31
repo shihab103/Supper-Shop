@@ -1,20 +1,22 @@
-import React from "react";
-
 const ContactUs = () => {
   return (
     <div>
       <div>
         {/* banner section */}
-        <section className="h-64 content-center secondary">
-          <h1 className="text-center text-6xl font-bold">Contact Us</h1>
+
+        <section className="h-64 flex flex-col items-center justify-center mx-20 mt-5 secondary text-black text-center rounded-2xl shadow-md">
+          <h1 className="text-5xl md:text-6xl font-bold mb-3">Contact Us</h1>
+          <p className="max-w-2xl text-lg text-black/60 opacity-90">
+            We’d love to hear from you! Get in touch with us for any queries,
+            support, or feedback about Supper Shop.
+          </p>
         </section>
 
         {/* form section */}
-        {/* form section */}
-        <section className="my-20 grid md:grid-cols-2 gap-10 items-center">
+        <section className="my-10 grid md:grid-cols-2 gap-10 items-center">
           {/* Contact Form */}
-          <form className="space-y-4 bg-base-100 shadow-lg p-8 rounded-2xl">
-            <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
+          <form className="space-y-4 p-8 rounded-2xl">
+            <h2 className="text-2xl text-center font-bold mb-4">Contact Us</h2>
             <div className="flex gap-4">
               <input
                 className="input secondary input-bordered w-1/2 rounded-full"

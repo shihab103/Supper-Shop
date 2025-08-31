@@ -83,7 +83,7 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto  p-6 rounded shadow-md my-10">
+    <div className="max-w-2xl mx-auto secondary p-6 rounded shadow-md my-10">
       <h2 className="text-2xl font-bold mb-6">Add New Product</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -93,7 +93,7 @@ const AddProduct = () => {
           <input
             type="text"
             {...register("name", { required: "Product name is required" })}
-            className="input card-bg input-bordered w-full"
+            className="input bg input-bordered w-full"
           />
           {errors.name && (
             <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -105,7 +105,7 @@ const AddProduct = () => {
           <label className="block mb-1 font-medium">Description</label>
           <textarea
             {...register("description", { required: "Description is required" })}
-            className="textarea card-bg textarea-bordered w-full"
+            className="textarea bg textarea-bordered w-full"
           ></textarea>
           {errors.description && (
             <p className="text-red-500 text-sm">{errors.description.message}</p>
@@ -120,7 +120,7 @@ const AddProduct = () => {
               type="number"
               step="0.01"
               {...register("price", { required: "Price is required" })}
-              className="input card-bg input-bordered w-full"
+              className="input bg input-bordered w-full"
             />
             {errors.price && (
               <p className="text-red-500 text-sm">{errors.price.message}</p>
@@ -131,7 +131,7 @@ const AddProduct = () => {
             <input
               type="number"
               {...register("stock", { required: "Stock is required" })}
-              className="input card-bg input-bordered w-full"
+              className="input bg input-bordered w-full"
             />
             {errors.stock && (
               <p className="text-red-500 text-sm">{errors.stock.message}</p>
@@ -145,7 +145,7 @@ const AddProduct = () => {
           <input
             type="date"
             {...register("expiryDate")}
-            className="input card-bg input-bordered w-full"
+            className="input bg input-bordered w-full"
           />
         </div>
 
@@ -154,7 +154,7 @@ const AddProduct = () => {
           <label className="block mb-1 font-medium">Category</label>
           <select
             {...register("categoryId", { required: "Category is required" })}
-            className="select card-bg select-bordered w-full"
+            className="select bg select-bordered w-full"
           >
             <option value="">Select Category</option>
             {categories.map((cat) => (
@@ -175,14 +175,14 @@ const AddProduct = () => {
             type="file"
             accept="image/*"
             {...register("image", { required: "Image is required" })}
-            className="file-input card-bg file-input-bordered w-full"
+            className="file-input bg file-input-bordered w-full"
           />
           {errors.image && (
             <p className="text-red-500 text-sm">{errors.image.message}</p>
           )}
         </div>
 
-        <button type="submit" className="btn btn-bg border-0 w-full">
+        <button type="submit" className="btn primary text-white border-0 w-full">
           Add Product
         </button>
       </form>

@@ -56,7 +56,7 @@ const OurTeam = () => {
   ];
 
   return (
-    <div className="bg-white py-16 px-6 lg:px-20 mt-20 rounded-3xl">
+    <div className="py-16 px-6 lg:px-20 -mt-10 rounded-3xl">
       <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
         Our Creative Team
       </h2>
@@ -86,7 +86,7 @@ const OurTeam = () => {
         {memberData.map((member, index) => (
           <SwiperSlide
             key={index}
-            className="bg-gray-100 rounded-2xl p-6 flex flex-col items-center text-center shadow-lg w-[300px] max-w-[320px]" 
+            className="secondary rounded-2xl p-6 flex flex-col items-center text-center shadow-lg w-[300px] max-w-[320px]" 
           >
             <img
               src={member.image}

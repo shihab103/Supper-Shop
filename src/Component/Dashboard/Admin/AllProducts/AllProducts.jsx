@@ -99,7 +99,7 @@ const AllProducts = () => {
         All Products
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
         {products.map((product) => (
           <div
             key={product._id}
@@ -109,7 +109,7 @@ const AllProducts = () => {
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-38 object-cover"
+                className="w-full h-38 2xl:h-52 object-cover"
               />
             </div>
 

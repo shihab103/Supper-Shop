@@ -57,7 +57,7 @@ const FeaturedCategories = () => {
   if (loading) return <Loading />;
 
   return (
-    <section className="py-12 px-6 md:px-16 bg-gray-50 overflow-hidden">
+    <section className="py-12 px-6 md:px-16 overflow-hidden">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">
         Featured Categories
       </h2>
@@ -74,7 +74,7 @@ const FeaturedCategories = () => {
               <div
                 key={category._id}
                 onClick={() => navigate(`/category/${category._id}`)}
-                className={`w-40 md:w-52 h-[260px] rounded-xl shadow-md cursor-pointer transform transition-all duration-500 flex-shrink-0
+                className={`w-40 md:w-52 h-[260px] rounded-xl shadow-md cursor-pointer transform transition-all duration-500  flex-shrink-0
                   ${isCenter ? "scale-105 shadow-lg z-10" : "scale-90 opacity-60"}
                 `}
               >

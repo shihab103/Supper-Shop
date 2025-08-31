@@ -57,7 +57,7 @@ const WishList = () => {
           {wishlistItems.map((item) => (
             <div
               key={item._id}
-              className="card-bg p-4 rounded shadow flex flex-col justify-between relative group"
+              className="secondary p-4 rounded shadow flex flex-col justify-between relative group"
             >
               <img
                 src={item.image}
@@ -81,7 +81,7 @@ const WishList = () => {
                 {/* Details Button */}
                 <button
                   onClick={() => navigate(`/product/${item._id}`)}
-                  className="btn btn-sm btn-bg"
+                  className="btn btn-sm primary text-white"
                 >
                   Details
                 </button>

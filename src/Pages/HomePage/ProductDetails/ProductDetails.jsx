@@ -188,13 +188,13 @@ const ProductDetails = () => {
   if (!product) return <p className="text-center mt-10">Product not found</p>;
 
   return (
-    <section className="max-w-7xl mx-auto p-6 bg rounded shadow">
+    <section className="max-w-7xl mx-auto p-6 rounded shadow">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left: Product Info + Reviews */}
         <div className="lg:w-2/3 flex flex-col gap-5">
           <h1 className="text-center font-bold text-xl">Product Details</h1>
 
-          <div className="flex card-bg flex-col md:flex-row gap-4 p-3 rounded shadow-xl relative">
+          <div className="flex secondary flex-col md:flex-row gap-4 p-3 rounded shadow-xl relative">
             <img
               src={product.image}
               alt={product.name}
@@ -210,7 +210,7 @@ const ProductDetails = () => {
               )}
             </button>
 
-            <div className="flex flex-col justify-between flex-1 mt-4 md:mt-0">
+            <div className="flex flex-col  justify-between flex-1 mt-4 md:mt-0">
               <div>
                 <h2 className="text-xl font-bold">{product.name}</h2>
                 <p className="text-gray-700 mt-2">{product.description}</p>
@@ -229,7 +229,7 @@ const ProductDetails = () => {
                   </p>
                 )}
               </div>
-              <button onClick={addToCart} className="btn btn-bg mt-3">
+              <button onClick={addToCart} className="btn primary text-white mt-3">
                 Add to Cart
               </button>
             </div>
@@ -269,11 +269,11 @@ const ProductDetails = () => {
                 <textarea
                   value={myReview}
                   onChange={(e) => setMyReview(e.target.value)}
-                  className="textarea textarea-bordered card-bg w-full"
+                  className="textarea textarea-bordered  secondary w-full"
                   placeholder="Write your review..."
                   required
                 />
-                <button className="btn btn-bg shadow border-0 w-full sm:w-auto">
+                <button className="btn primary text-white shadow border-0 w-full sm:w-auto">
                   Submit Review
                 </button>
               </form>
@@ -322,7 +322,7 @@ const ProductDetails = () => {
             {relatedProducts.map((rp) => (
               <div
                 key={rp._id}
-                className="card-bg p-2 rounded shadow-xl flex flex-col justify-between h-50 cursor-pointer"
+                className="secondary p-2 rounded shadow-xl flex flex-col justify-between h-50 cursor-pointer"
                 onClick={() => navigate(`/product/${rp._id}`)}
               >
                 <img

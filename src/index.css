@@ -4,10 +4,11 @@
 
 body{
     font-family: "Poppins", sans-serif;
+    background-color: #f0f8ff;
 }
 
 .bg{
-    background-color: #ffffff;
+    background-color: #f0f8ff;
 }
 .bg-bar{
     background-color: #f8f8f8;
@@ -27,4 +28,12 @@ body{
 }
 .secondary{
     background-color: #cfe1e5;
+}
+
+input[type="file"]::file-selector-button {
+  background-color: #f0f8ff;
+  color: black;
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
 }

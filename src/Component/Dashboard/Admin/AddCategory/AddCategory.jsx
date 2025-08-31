@@ -61,7 +61,7 @@ const AddCategory = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto card-bg p-6 rounded shadow-md my-10">
+    <div className="max-w-md mx-auto secondary p-6 rounded shadow-md my-10">
       <h2 className="text-2xl font-bold mb-4">Add New Category</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -72,7 +72,7 @@ const AddCategory = () => {
             type="text"
             {...register("name", { required: "Category name is required" })}
             placeholder="e.g. Groceries"
-            className="input input-bordered w-full"
+            className="input bg input-bordered w-full"
           />
           {errors.name && (
             <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -86,14 +86,14 @@ const AddCategory = () => {
             type="file"
             accept="image/*"
             {...register("image", { required: "Image is required" })}
-            className="file-input file-input-bordered w-full"
+            className="file-input bg file-input-bordered w-full"
           />
           {errors.image && (
             <p className="text-red-500 text-sm">{errors.image.message}</p>
           )}
         </div>
 
-        <button type="submit" className="btn btn-bg w-full">
+        <button type="submit" className="btn primary text-white w-full">
           Add Category
         </button>
       </form>
