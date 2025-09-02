@@ -5,13 +5,13 @@ import Loading from "../../Layout/Shared/Loading/Loading";
 import useAuth from "../../Hooks/useAuth";
 
 const Cart = () => {
-  const { user } = useAuth(); 
-  console.log("User Email:", user?.email);
+  const { user } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   useEffect(() => {
-    if (!user?.email) return; 
+    if (!user?.email) return;
 
     const fetchCart = async () => {
       setLoading(true);
@@ -19,7 +19,6 @@ const Cart = () => {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/cart?email=${user.email}`
         );
-        console.log("Cart data:", res.data);
         setCartItems(res.data);
       } catch (err) {
         console.error("Cart fetch error:", err);
@@ -53,6 +52,31 @@ const Cart = () => {
     }
   };
 
+  // ✅ Checkout Handler
+  const handleCheckout = async () => {
+    if (!user?.email) return toast.error("You must be logged in to checkout");
+
+    setCheckoutLoading(true);
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/checkout`,
+        { email: user.email }
+      );
+
+      if (res.data.success) {
+        toast.success("Order placed successfully!");
+        setCartItems([]); // empty cart in UI
+      } else {
+        toast.error(res.data.error || "Checkout failed");
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      toast.error("Failed to complete checkout");
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6">My Cart</h2>
@@ -61,7 +85,7 @@ const Cart = () => {
         {cartItems.map((item) => (
           <div
             key={item._id}
-            className="flex flex-col sm:flex-row items-center gap-4 border p-4 rounded"
+            className="flex secondary flex-col sm:flex-row items-center gap-4 border p-4 rounded"
           >
             <img
               src={item.productImage}
@@ -84,7 +108,7 @@ const Cart = () => {
             </div>
             <button
               onClick={() => handleRemove(item._id)}
-              className="btn btn-danger mt-2 sm:mt-0"
+              className="btn primary text-white mt-2 sm:mt-0"
             >
               Remove
             </button>
@@ -94,7 +118,13 @@ const Cart = () => {
 
       <div className="mt-6 text-right">
         <h3 className="text-xl font-bold">Total: {totalPrice.toFixed(2)}৳</h3>
-        <button className="btn btn-bg mt-3">Proceed to Checkout</button>
+        <button
+          onClick={handleCheckout}
+          disabled={checkoutLoading}
+          className="btn primary text-white mt-3"
+        >
+          {checkoutLoading ? "Processing..." : "Proceed to Checkout"}
+        </button>
       </div>
     </div>
   );

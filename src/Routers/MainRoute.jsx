@@ -18,6 +18,7 @@ import About from "../Pages/About/About";
 import ContactUs from "../Pages/ContactUs/ContactUs";
 import AdminDashboardHome from "../Component/Dashboard/Admin/AdminDashboardHome/AdminDashboardHome";
 import AllUser from "../Component/Dashboard/Admin/AllUser/AllUser";
+import AllOrders from "../Component/Dashboard/Admin/AllOrders/AllOrders";
 
 const MainRoute = createBrowserRouter([
   {
@@ -56,6 +57,7 @@ const MainRoute = createBrowserRouter([
       { path: "add-category", Component: AddCategory },
       { path: "all-review", Component: AllReview },
       { path: "all-user", Component: AllUser },
+      { path: "all-orders", Component: AllOrders },
     ],
   },
 ]);
