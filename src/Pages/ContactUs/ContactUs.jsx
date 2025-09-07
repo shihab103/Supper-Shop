@@ -4,7 +4,7 @@ const ContactUs = () => {
       <div>
         {/* banner section */}
 
-        <section className="h-64 flex flex-col items-center justify-center mx-20 mt-5 secondary text-black text-center rounded-2xl shadow-md">
+        <section className="h-64 flex flex-col items-center justify-center lg:mx-20 mx-10 mt-5 secondary text-black text-center rounded-2xl shadow-md">
           <h1 className="text-5xl md:text-6xl font-bold mb-3">Contact Us</h1>
           <p className="max-w-2xl text-lg text-black/60 opacity-90">
             We’d love to hear from you! Get in touch with us for any queries,

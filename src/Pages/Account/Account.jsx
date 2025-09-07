@@ -84,7 +84,7 @@ const onSubmit = async (formData) => {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <section className="max-w-2xl mx-auto bg-white p-6 rounded shadow-md my-10">
+    <section className="max-w-2xl mx-auto secondary p-6 rounded shadow-md">
       <h2 className="text-2xl font-bold mb-6">My Profile</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Name */}
@@ -93,7 +93,7 @@ const onSubmit = async (formData) => {
           <input
             type="text"
             {...register("name", { required: "Name is required" })}
-            className="input input-bordered w-full"
+            className="input bg input-bordered w-full"
           />
           {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
         </div>
@@ -105,7 +105,7 @@ const onSubmit = async (formData) => {
             type="email"
             value={userData?.email}
             readOnly
-            className="input input-bordered w-full bg-gray-100"
+            className="input bg input-bordered w-full bg-gray-100"
           />
         </div>
 
@@ -115,7 +115,7 @@ const onSubmit = async (formData) => {
           <input
             type="text"
             {...register("phone", { required: "Phone is required" })}
-            className="input input-bordered w-full"
+            className="input bg input-bordered w-full"
           />
           {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
         </div>
@@ -125,7 +125,7 @@ const onSubmit = async (formData) => {
           <label className="block mb-1 font-medium">Billing Address</label>
           <textarea
             {...register("billingAddress", { required: "Billing address is required" })}
-            className="textarea textarea-bordered w-full"
+            className="textarea bg textarea-bordered w-full"
           ></textarea>
           {errors.billingAddress && <p className="text-red-500 text-sm">{errors.billingAddress.message}</p>}
         </div>
@@ -137,7 +137,7 @@ const onSubmit = async (formData) => {
             type="file"
             accept="image/*"
             {...register("photo")}
-            className="file-input file-input-bordered w-full"
+            className="file-input bg file-input-bordered w-full"
           />
           {userData?.photo && (
             <img
@@ -148,7 +148,7 @@ const onSubmit = async (formData) => {
           )}
         </div>
 
-        <button type="submit" className="btn btn-primary w-full">Update Profile</button>
+        <button type="submit" className="btn primary text-white w-full">Update Profile</button>
       </form>
     </section>
   );

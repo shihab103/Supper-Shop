@@ -102,14 +102,14 @@ const DashboardLayout = () => {
           )}
           {role === "customer" && (
             <>
-              <li>
+              {/* <li>
                 <NavLink
                   className={"font-semibold"}
                   to={"/dashboard/add-product"}
                 >
                   Add Product
                 </NavLink>
-              </li>
+              </li> */}
             </>
           )}
         </ul>

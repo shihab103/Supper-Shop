@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import useAuth from "../../Hooks/useAuth";
 import Loading from "../../Layout/Shared/Loading/Loading";
 
@@ -6,6 +7,7 @@ const MyProfile = () => {
   const { user, loading } = useAuth();
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user?.email) return;
@@ -28,12 +30,44 @@ const MyProfile = () => {
   }, [user?.email]);
 
   if (loading || isLoading) {
-    return <Loading/>
+    return <Loading />;
   }
 
   if (!profile) {
     return <p className="text-center mt-10">Profile not found.</p>;
   }
+
+  // Update Profile Function
+  const handleEditProfile = async () => {
+    try {
+      const updatedProfile = {
+        ...profile,
+        name: profile.name,
+        phone: profile.phone,
+        billingAddress: profile.billingAddress,
+      };
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/user/${user.email}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedProfile),
+        }
+      );
+
+      if (res.ok) {
+        alert("Profile updated successfully!");
+        navigate("/");
+      } else {
+        alert("Failed to update profile.");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg flex justify-center items-center p-4">
@@ -63,10 +97,14 @@ const MyProfile = () => {
             </p>
           </div>
 
-
           {/* Edit Button */}
           <div className="card-actions justify-end mt-6">
-            <button className="btn primary text-white">Edit Profile</button>
+            <button
+              className="btn primary text-white"
+              onClick={handleEditProfile}
+            >
+              Edit Profile
+            </button>
           </div>
         </div>
       </div>

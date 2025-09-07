@@ -40,7 +40,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-6xl bg-white shadow-xl rounded-lg flex flex-col md:flex-row overflow-hidden">
+      <div className="w-full max-w-6xl secondary shadow-xl rounded-lg flex flex-col md:flex-row overflow-hidden">
         {/* Left: Login Form */}
         <div className="w-full md:w-1/2 p-8">
           {/* Logo + Title */}
@@ -52,7 +52,7 @@ const Login = () => {
               <input
                 type="email"
                 name="email"
-                className="input input-bordered w-full"
+                className="input bg input-bordered w-full"
                 placeholder="Enter your email"
                 required
               />
@@ -62,7 +62,7 @@ const Login = () => {
               <input
                 type="password"
                 name="password"
-                className="input input-bordered w-full"
+                className="input bg input-bordered w-full"
                 placeholder="Enter your password"
                 required
               />
@@ -72,13 +72,13 @@ const Login = () => {
                 Forgot password?
               </a>
             </div>
-            <button type="submit" className="btn btn-neutral w-full">
+            <button type="submit" className="btn primary text-white w-full">
               Login
             </button>
           </form>
           <p className="mt-4 text-center">
             Don’t have an account?{" "}
-            <Link to="/register" className="text-blue-500 underline">
+            <Link to="/register" className="text-[#669295] underline">
               Register here
             </Link>
           </p>

@@ -33,7 +33,9 @@ const Navbar = () => {
       {
         user && (
           <>
-          <NavLink to={'/dashboard'}>Dashboard</NavLink>
+          <li>
+            <NavLink to={'/dashboard'}>Dashboard</NavLink>
+          </li>
           </>
         )
       }
@@ -46,7 +48,7 @@ const Navbar = () => {
       <div className="navbar-start flex items-center gap-2">
         {/* Mobile Dropdown Button */}
         <div className="dropdown lg:hidden">
-          <div tabIndex={0} role="button" className="btn btn-ghost">
+          <div tabIndex={0} role="button" className="btn p-0 btn-ghost">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -62,7 +64,7 @@ const Navbar = () => {
               />
             </svg>
           </div>
-          <ul className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+          <ul className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow secondary text-black rounded-box w-52">
             {links}
           </ul>
         </div>
@@ -82,12 +84,10 @@ const Navbar = () => {
           </button>
         ) : (
           <div className="flex gap-3">
-            <NavLink className="btn btn-primary" to="/login">
+            <NavLink className="btn secondary" to="/login">
               Login
             </NavLink>
-            <NavLink className="btn btn-primary" to="/register">
-              Register
-            </NavLink>
+
           </div>
         )}
       </div>

@@ -43,14 +43,12 @@ const Register = () => {
 
   return (
     <>
-      {/* Fixed Logo at Top-Left */}
-
       {/* Main Register Page */}
-      <div className="min-h-screen flex items-center justify-center bg-base-200">
-        <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-base-100 shadow-xl rounded-2xl relative">
+      <div className="min-h-screen flex items-center justify-center bg">
+        <div className="w-full  max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-base-100 shadow-xl rounded-2xl relative">
           {/* Left side (Form only) */}
-          <div className="relative px-8">
-      <ShopLogo/>
+          <div className="relative secondary pt-10 px-8">
+            <ShopLogo />
             <h1 className="text-4xl font-bold mb-6 text-center">
               Register Now!
             </h1>
@@ -63,7 +61,7 @@ const Register = () => {
                   type="text"
                   name="name"
                   placeholder="Your Name"
-                  className="input input-bordered w-full"
+                  className="input bg input-bordered w-full"
                   required
                 />
               </div>
@@ -73,7 +71,7 @@ const Register = () => {
                   type="email"
                   name="email"
                   placeholder="Email"
-                  className="input input-bordered w-full"
+                  className="input bg input-bordered w-full"
                   required
                 />
               </div>
@@ -83,25 +81,25 @@ const Register = () => {
                   type="password"
                   name="password"
                   placeholder="Password"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full bg"
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-neutral w-full">
+              <button type="submit" className="btn primary text-white w-full">
                 Register
               </button>
             </form>
 
-            <p className="mt-4 text-center">
+            <p className="mt-4 mb-10 text-center">
               Already have an account?{" "}
-              <Link className="text-blue-500 underline" to="/login">
+            <Link className="text-[#669295] underline" to="/login">
                 Login
               </Link>
             </p>
           </div>
 
           {/* Right side (Register animation) */}
-          <div className="hidden md:block">
+          <div className="hidden bg-white md:block">
             <Lottie animationData={registerAnimation} loop={true} />
           </div>
         </div>

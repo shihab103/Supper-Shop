@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Loading from "../../Layout/Shared/Loading/Loading";
 import useAuth from "../../Hooks/useAuth";
+import Lottie from "lottie-react";
+import animation from "../../assets/Lotties/EmptyAnimation.json";
 
 const Cart = () => {
   const { user } = useAuth();
@@ -34,7 +36,10 @@ const Cart = () => {
   if (loading) return <Loading />;
 
   if (cartItems.length === 0)
-    return <p className="text-center mt-10">Your cart is empty.</p>;
+    return <div>
+      <Lottie className="w-90 mx-auto" animationData={animation} loop={true}></Lottie>
+      <h1 className="text-center text-black/60 mb-10">No Items in Your Cart</h1>
+    </div>;
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,

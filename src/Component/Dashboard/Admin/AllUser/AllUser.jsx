@@ -50,7 +50,7 @@ const AllUser = () => {
               profiles.map((p, index) => (
                 <tr key={p._id}>
                   <th>{index + 1}</th>
-                  <td>{p.name || "N/A"}</td>
+                  <td className="flex items-center gap-2"><img className="w-10 rounded-full h-10" src={p.photo} alt="" />{p.name || "N/A"}</td>
                   <td>{p.email}</td>
                   <td>
                     <span className="capitalize">{p.role || "customer"}</span>
@@ -61,7 +61,6 @@ const AllUser = () => {
                       defaultValue={p.status || "active"}
                       className="select select-bordered select-sm"
                       onChange={(e) => {
-                        // এখানে শুধু UI আছে, API call এখনো দিচ্ছি না
                         console.log(
                           `User: ${p.email} → New Status: ${e.target.value}`
                         );
