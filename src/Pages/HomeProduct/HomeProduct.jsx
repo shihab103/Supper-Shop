@@ -12,16 +12,25 @@ const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1300); // lg breakpoint
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch all products
+  // Detect screen size dynamically
+  useEffect(() => {
+    const handleResize = () => setIsLargeScreen(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Fetch all products (reverse order)
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/all-products`);
         const data = await res.json();
-        setProducts(data);
+        const reversedData = [...data].reverse();
+        setProducts(reversedData);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -37,7 +46,8 @@ const AllProducts = () => {
     if (user?.email) {
       fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email/${user.email}`)
         .then((res) => res.json())
-        .then((data) => setWishlist(data.map((p) => p._id)));
+        .then((data) => setWishlist(data.map((p) => p._id)))
+        .catch((err) => console.error("Error fetching wishlist:", err));
     }
   }, [user]);
 
@@ -46,22 +56,27 @@ const AllProducts = () => {
   const toggleWishlist = async (productId) => {
     if (!user?.email) return toast.error("Please login to use wishlist.");
 
-    if (!isInWishlist(productId)) {
-      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, productId }),
-      });
-      setWishlist([...wishlist, productId]);
-      toast.success("Added to wishlist"); 
-    } else {
-      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, productId }),
-      });
-      setWishlist(wishlist.filter((id) => id !== productId));
-      toast.success("Removed from wishlist");
+    try {
+      if (!isInWishlist(productId)) {
+        await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: user.email, productId }),
+        });
+        setWishlist([...wishlist, productId]);
+        toast.success("Added to wishlist");
+      } else {
+        await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: user.email, productId }),
+        });
+        setWishlist(wishlist.filter((id) => id !== productId));
+        toast.success("Removed from wishlist");
+      }
+    } catch (err) {
+      console.error("Wishlist toggle error:", err);
+      toast.error("Something went wrong");
     }
   };
 
@@ -89,7 +104,19 @@ const AllProducts = () => {
     }
   };
 
+  // truncate name if more than 2 words
+  const truncateName = (name) => {
+    const words = name.split(" ");
+    if (words.length > 2) {
+      return `${words.slice(0, 2).join(" ")}...`;
+    }
+    return name;
+  };
+
   if (loading) return <Loading />;
+
+  // show product count based on screen size
+  const visibleProducts = isLargeScreen ? 10 : 8;
 
   return (
     <section className="py-12 px-6 md:px-16 bg min-h-screen relative">
@@ -99,8 +126,8 @@ const AllProducts = () => {
         Our Products
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
-        {products.slice(0,8).map((product) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+        {products.slice(0, visibleProducts).map((product) => (
           <div
             key={product._id}
             className="relative card-bg secondary px-4 pt-4 shadow-md rounded-2xl overflow-hidden transition hover:shadow-lg group"
@@ -134,7 +161,9 @@ const AllProducts = () => {
             </div>
 
             <div className="py-4">
-              <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
+              <h3 className="text-lg font-semibold mb-1">
+                {truncateName(product.name)}
+              </h3>
               <p className="text-sm text-gray-600 mb-1">Price: ৳{product.price}</p>
               <p className="text-sm text-gray-600 mb-3">Stock: {product.stock}</p>
 

@@ -25,7 +25,10 @@ const CategoryProducts = () => {
           `${import.meta.env.VITE_API_URL}/products-by-category/${categoryId}`
         );
         const data = await res.json();
-        setProducts(data);
+
+        // Reverse order so latest products come first
+        const reversed = [...data].reverse();
+        setProducts(reversed);
       } catch (error) {
         console.log("Error fetching products:", error);
       } finally {
@@ -48,7 +51,7 @@ const CategoryProducts = () => {
   const isInWishlist = (productId) => wishlist.includes(productId);
 
   const toggleWishlist = async (productId) => {
-    if (!email) return alert("Please login to use wishlist.");
+    if (!email) return toast.error("Please login to use wishlist.");
 
     if (!isInWishlist(productId)) {
       await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
@@ -57,6 +60,7 @@ const CategoryProducts = () => {
         body: JSON.stringify({ email, productId }),
       });
       setWishlist([...wishlist, productId]);
+      toast.success("Added to wishlist");
     } else {
       await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
         method: "DELETE",
@@ -64,6 +68,7 @@ const CategoryProducts = () => {
         body: JSON.stringify({ email, productId }),
       });
       setWishlist(wishlist.filter((id) => id !== productId));
+      toast.success("Removed from wishlist");
     }
   };
 
@@ -91,6 +96,12 @@ const CategoryProducts = () => {
   };
 
   if (loading) return <Loading />;
+
+  // Function to trim long product names
+  const formatName = (name) => {
+    const words = name.split(" ");
+    return words.length > 2 ? `${words.slice(0, 2).join(" ")}...` : name;
+  };
 
   return (
     <section className="py-12 px-6 md:px-16 bg min-h-screen">
@@ -136,7 +147,9 @@ const CategoryProducts = () => {
               </div>
 
               <div className="py-4">
-                <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
+                <h3 className="text-lg font-semibold mb-1">
+                  {formatName(product.name)}
+                </h3>
                 <p className="text-sm text-gray-600 mb-1">
                   Price: ৳{product.price}
                 </p>

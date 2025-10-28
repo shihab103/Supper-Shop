@@ -29,7 +29,6 @@ const OurTeam = () => {
         twitter: "https://x.com/shihab_web_dev?s=21",
       },
     },
-
     {
       name: "Afrina Tripty",
       role: "Co-Leader",
@@ -41,7 +40,6 @@ const OurTeam = () => {
         twitter: "#",
       },
     },
-
     {
       name: "Suraiya Rahman",
       role: "Support Member",
@@ -102,13 +100,18 @@ const OurTeam = () => {
         pagination={{ clickable: true }}
         modules={[EffectCoverflow, Pagination, Autoplay]}
         className="mySwiper max-w-[1100px] mx-auto"
-        slidesPerView={"auto"}
+        slidesPerView={3} // ✅ Fixed: auto → 3 for stable card layout
         spaceBetween={30}
+        breakpoints={{
+          320: { slidesPerView: 1 },
+          640: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
       >
         {memberData.map((member, index) => (
           <SwiperSlide
             key={index}
-            className="secondary mb-10 mx-auto rounded-2xl p-6 flex flex-col items-center text-center shadow-lg w-[300px] max-w-[320px]"
+            className="bg-white mb-10 mx-auto rounded-2xl p-6 flex flex-col items-center text-center shadow-lg w-full max-w-[300px]"
           >
             <img
               src={member.image}

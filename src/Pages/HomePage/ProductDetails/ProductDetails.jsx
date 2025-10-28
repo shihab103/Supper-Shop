@@ -18,6 +18,7 @@ const ProductDetails = () => {
   const [myReview, setMyReview] = useState("");
   const [myRating, setMyRating] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
+  const [showFullDesc, setShowFullDesc] = useState(false);
   const navigate = useNavigate();
 
   // Fetch product, related products, reviews
@@ -210,10 +211,34 @@ const ProductDetails = () => {
               )}
             </button>
 
-            <div className="flex flex-col  justify-between flex-1 mt-4 md:mt-0">
+            <div className="flex flex-col justify-between flex-1 mt-4 md:mt-0">
               <div>
                 <h2 className="text-xl font-bold">{product.name}</h2>
-                <p className="text-gray-700 mt-2">{product.description}</p>
+
+                {/* Description with See More / See Less */}
+                <div className="mt-2">
+                  <p className="text-gray-700">
+                    {showFullDesc
+                      ? product.description
+                      : product.description
+                          .split(" ")
+                          .slice(0, 15)
+                          .join(" ") +
+                        (product.description.split(" ").length > 15
+                          ? "..."
+                          : "")}
+                  </p>
+
+                  {product.description.split(" ").length > 15 && (
+                    <button
+                      onClick={() => setShowFullDesc(!showFullDesc)}
+                      className="cursor-pointer inline font-semibold mt-1 hover:underline"
+                    >
+                      {showFullDesc ? "See Less" : "See More"}
+                    </button>
+                  )}
+                </div>
+
                 <p className="mt-1 font-semibold">Price: {product.price}৳</p>
                 <p>Stock: {product.stock} pcs</p>
                 <p>Category: {product.categoryName}</p>
@@ -251,25 +276,18 @@ const ProductDetails = () => {
           <div className="mt-6">
             <h3 className="text-xl font-bold mb-4">Customer Reviews</h3>
             {user && (
-              <form
-                onSubmit={submitReview}
-                className="mb-6 flex flex-col gap-2"
-              >
+              <form onSubmit={submitReview} className="mb-6 flex flex-col gap-2">
                 <label className="font-semibold">Your Rating:</label>
                 <Rating
                   initialRating={myRating}
                   onChange={(value) => setMyRating(value)}
-                  emptySymbol={
-                    <span className="text-3xl text-gray-400">☆</span>
-                  }
-                  fullSymbol={
-                    <span className="text-3xl text-yellow-500">★</span>
-                  }
+                  emptySymbol={<span className="text-3xl text-gray-400">☆</span>}
+                  fullSymbol={<span className="text-3xl text-yellow-500">★</span>}
                 />
                 <textarea
                   value={myReview}
                   onChange={(e) => setMyReview(e.target.value)}
-                  className="textarea textarea-bordered  secondary w-full"
+                  className="textarea textarea-bordered secondary w-full"
                   placeholder="Write your review..."
                   required
                 />
@@ -297,9 +315,7 @@ const ProductDetails = () => {
                         <StarIcon
                           key={i}
                           className={`w-4 h-4 ${
-                            i < rev.rating
-                              ? "text-yellow-500"
-                              : "text-gray-300"
+                            i < rev.rating ? "text-yellow-500" : "text-gray-300"
                           }`}
                         />
                       ))}

@@ -28,7 +28,6 @@ const AllProducts = () => {
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, []);
 
@@ -37,7 +36,8 @@ const AllProducts = () => {
     if (user?.email) {
       fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email/${user.email}`)
         .then((res) => res.json())
-        .then((data) => setWishlist(data.map((p) => p._id)));
+        .then((data) => setWishlist(data.map((p) => p._id)))
+        .catch(() => toast.error("Failed to load wishlist"));
     }
   }, [user]);
 
@@ -46,22 +46,27 @@ const AllProducts = () => {
   const toggleWishlist = async (productId) => {
     if (!user?.email) return toast.error("Please login to use wishlist.");
 
-    if (!isInWishlist(productId)) {
-      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, productId }),
-      });
-      setWishlist([...wishlist, productId]);
-      toast.success("Added to wishlist"); 
-    } else {
-      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, productId }),
-      });
-      setWishlist(wishlist.filter((id) => id !== productId));
-      toast.success("Removed from wishlist");
+    try {
+      if (!isInWishlist(productId)) {
+        await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: user.email, productId }),
+        });
+        setWishlist([...wishlist, productId]);
+        toast.success("Added to wishlist ❤️");
+      } else {
+        await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: user.email, productId }),
+        });
+        setWishlist(wishlist.filter((id) => id !== productId));
+        toast.success("Removed from wishlist ❌");
+      }
+    } catch (error) {
+      console.error("Wishlist toggle error:", error);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -82,7 +87,7 @@ const AllProducts = () => {
 
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/add-to-cart`, cartData);
-      toast.success(`${product.name} added to cart`);
+      toast.success(`${product.name} added to cart 🛒`);
     } catch (err) {
       console.error("Add to cart error:", err);
       toast.error("Failed to add to cart");
@@ -100,53 +105,87 @@ const AllProducts = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
-        {products.map((product) => (
-          <div
-            key={product._id}
-            className="relative card-bg secondary px-4 pt-4 shadow-md rounded-2xl overflow-hidden transition hover:shadow-lg group"
-          >
-            <div className="overflow-hidden rounded-t-xl">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-38 2xl:h-52 object-cover"
-              />
-            </div>
+        {products.map((product) => {
+          // 🔹 Limit product name to 2 words max
+          const shortName = (() => {
+            const words = product.name.split(" ");
+            return words.length > 2 ? words.slice(0, 2).join(" ") + "..." : product.name;
+          })();
 
-            {/* Overlay with Eye + Heart */}
-            <div className="absolute bottom-40 left-1/2 transform -translate-x-1/2 secondary px-14 py-2 rounded-t-2xl flex items-center justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 cursor-pointer">
-              <FaEye
-                size={20}
-                className="hover:text-red-500"
-                onClick={() => navigate(`/product/${product._id}`)}
-              />
-              {isInWishlist(product._id) ? (
-                <HeartSolid
-                  className="h-5 w-5 text-red-500"
-                  onClick={() => toggleWishlist(product._id)}
+          return (
+            <div
+              key={product._id}
+              className="relative card-bg secondary px-4 pt-4 shadow-md rounded-2xl overflow-hidden transition hover:shadow-lg group"
+            >
+              <div className="overflow-hidden rounded-t-xl">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-38 2xl:h-52 object-cover"
                 />
-              ) : (
-                <HeartOutline
-                  className="h-5 w-5 text-gray-400 hover:text-red-500"
-                  onClick={() => toggleWishlist(product._id)}
+              </div>
+
+              {/* 🔹 Overlay (Only for desktop hover) */}
+              <div className="hidden md:flex absolute bottom-40 left-1/2 transform -translate-x-1/2 secondary px-14 py-2 rounded-t-2xl items-center justify-center gap-4 opacity-0 md:group-hover:opacity-100 md:group-hover:translate-y-0 translate-y-4 transition-all duration-300 cursor-pointer">
+                <FaEye
+                  size={20}
+                  className="hover:text-red-500"
+                  onClick={() => navigate(`/product/${product._id}`)}
                 />
-              )}
-            </div>
+                {isInWishlist(product._id) ? (
+                  <HeartSolid
+                    className="h-5 w-5 text-red-500"
+                    onClick={() => toggleWishlist(product._id)}
+                  />
+                ) : (
+                  <HeartOutline
+                    className="h-5 w-5 text-gray-400 hover:text-red-500"
+                    onClick={() => toggleWishlist(product._id)}
+                  />
+                )}
+              </div>
 
-            <div className="py-4">
-              <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
-              <p className="text-sm text-gray-600 mb-1">Price: ৳{product.price}</p>
-              <p className="text-sm text-gray-600 mb-3">Stock: {product.stock}</p>
+              <div className="py-4">
+                {/* 🔹 Shortened product name */}
+                <h3 className="text-lg font-semibold mb-1">{shortName}</h3>
+                <p className="text-sm text-gray-600 mb-1">Price: ৳{product.price}</p>
+                <p className="text-sm text-gray-600 mb-3">Stock: {product.stock}</p>
 
-              <button
-                className="btn primary text-white w-full"
-                onClick={() => handleAddToCart(product)}
-              >
-                Add to Cart
-              </button>
+                {/* ✅ Large screen: Add to Cart */}
+                <div className="hidden md:block">
+                  <button
+                    className="btn primary text-white w-full"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+
+                {/* ✅ Mobile view: View Details + Wishlist */}
+                <div className="flex items-center justify-between md:hidden">
+                  <button
+                    className="btn btn-sm primary text-white"
+                    onClick={() => navigate(`/product/${product._id}`)}
+                  >
+                    View Details
+                  </button>
+
+                  {isInWishlist(product._id) ? (
+                    <HeartSolid
+                      className="h-6 w-6 text-red-500 cursor-pointer"
+                      onClick={() => toggleWishlist(product._id)}
+                    />
+                  ) : (
+                    <HeartOutline
+                      className="h-6 w-6 text-gray-400 hover:text-red-500 cursor-pointer"
+                      onClick={() => toggleWishlist(product._id)}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
