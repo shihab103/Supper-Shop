@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Loading from "../../../Layout/Shared/Loading/Loading";
-import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
+import {
+  HeartIcon as HeartOutline,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolid, StarIcon } from "@heroicons/react/24/solid";
 import useAuth from "../../../Hooks/useAuth";
 import Rating from "react-rating";
+import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 
 const ProductDetails = () => {
@@ -25,13 +29,17 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/product/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/product/${id}`
+        );
         const data = await res.json();
         setProduct(data);
 
         // Related products
         const relatedRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/products-by-category/${data.categoryId}`
+          `${import.meta.env.VITE_API_URL}/products-by-category/${
+            data.categoryId
+          }`
         );
         const relatedData = await relatedRes.json();
         setRelatedProducts(
@@ -185,6 +193,38 @@ const ProductDetails = () => {
     }
   };
 
+  const deleteProduct = async () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await fetch(
+            `${import.meta.env.VITE_API_URL}/product/${product._id}`,
+            {
+              method: "DELETE",
+            }
+          );
+          if (res.ok) {
+            Swal.fire("Deleted!", "Product has been deleted.", "success");
+            navigate("/"); // Redirect after delete
+          } else {
+            Swal.fire("Failed!", "Failed to delete product.", "error");
+          }
+        } catch (err) {
+          console.error(err);
+          Swal.fire("Error!", "Something went wrong!", "error");
+        }
+      }
+    });
+  };
+
   if (loading) return <Loading />;
   if (!product) return <p className="text-center mt-10">Product not found</p>;
 
@@ -202,14 +242,20 @@ const ProductDetails = () => {
               className="w-full md:w-96 h-96 md:h-auto object-cover rounded"
             />
 
-            {/* Wishlist button */}
-            <button onClick={toggleWishlist} className="absolute top-3 right-3">
-              {isInWishlist ? (
-                <HeartSolid className="h-6 w-6 text-red-500" />
-              ) : (
-                <HeartOutline className="h-6 w-6 text-gray-400 hover:text-red-500" />
-              )}
-            </button>
+            {/* Wishlist + Delete buttons */}
+            <div className="absolute top-3 right-3 flex gap-2">
+              <button onClick={deleteProduct} className="hover:text-red-500">
+                <TrashIcon className="h-6 w-6" />
+              </button>
+
+              <button onClick={toggleWishlist}>
+                {isInWishlist ? (
+                  <HeartSolid className="h-6 w-6 text-red-500" />
+                ) : (
+                  <HeartOutline className="h-6 w-6 text-gray-400 hover:text-red-500" />
+                )}
+              </button>
+            </div>
 
             <div className="flex flex-col justify-between flex-1 mt-4 md:mt-0">
               <div>
@@ -220,10 +266,7 @@ const ProductDetails = () => {
                   <p className="text-gray-700">
                     {showFullDesc
                       ? product.description
-                      : product.description
-                          .split(" ")
-                          .slice(0, 15)
-                          .join(" ") +
+                      : product.description.split(" ").slice(0, 15).join(" ") +
                         (product.description.split(" ").length > 15
                           ? "..."
                           : "")}
@@ -244,8 +287,7 @@ const ProductDetails = () => {
                 <p>Category: {product.categoryName}</p>
                 {product.createdAt && (
                   <p>
-                    Added on:{" "}
-                    {new Date(product.createdAt).toLocaleDateString()}
+                    Added on: {new Date(product.createdAt).toLocaleDateString()}
                   </p>
                 )}
                 {product.expiryDate && (
@@ -254,7 +296,10 @@ const ProductDetails = () => {
                   </p>
                 )}
               </div>
-              <button onClick={addToCart} className="btn primary text-white mt-3">
+              <button
+                onClick={addToCart}
+                className="btn primary text-white mt-3"
+              >
                 Add to Cart
               </button>
             </div>
@@ -276,13 +321,20 @@ const ProductDetails = () => {
           <div className="mt-6">
             <h3 className="text-xl font-bold mb-4">Customer Reviews</h3>
             {user && (
-              <form onSubmit={submitReview} className="mb-6 flex flex-col gap-2">
+              <form
+                onSubmit={submitReview}
+                className="mb-6 flex flex-col gap-2"
+              >
                 <label className="font-semibold">Your Rating:</label>
                 <Rating
                   initialRating={myRating}
                   onChange={(value) => setMyRating(value)}
-                  emptySymbol={<span className="text-3xl text-gray-400">☆</span>}
-                  fullSymbol={<span className="text-3xl text-yellow-500">★</span>}
+                  emptySymbol={
+                    <span className="text-3xl text-gray-400">☆</span>
+                  }
+                  fullSymbol={
+                    <span className="text-3xl text-yellow-500">★</span>
+                  }
                 />
                 <textarea
                   value={myReview}

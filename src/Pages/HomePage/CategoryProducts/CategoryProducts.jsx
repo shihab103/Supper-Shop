@@ -15,7 +15,15 @@ const CategoryProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
   const navigate = useNavigate();
+
+  // Detect screen size dynamically
+  useEffect(() => {
+    const handleResize = () => setIsLargeScreen(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Fetch products by category
   useEffect(() => {
@@ -25,26 +33,23 @@ const CategoryProducts = () => {
           `${import.meta.env.VITE_API_URL}/products-by-category/${categoryId}`
         );
         const data = await res.json();
-
-        // Reverse order so latest products come first
-        const reversed = [...data].reverse();
-        setProducts(reversed);
+        setProducts([...data].reverse());
       } catch (error) {
-        console.log("Error fetching products:", error);
+        console.error("Error fetching products:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProductsByCategory();
   }, [categoryId]);
 
-  // Fetch wishlist for logged-in user
+  // Fetch wishlist
   useEffect(() => {
     if (email) {
       fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email/${email}`)
         .then((res) => res.json())
-        .then((data) => setWishlist(data.map((p) => p._id)));
+        .then((data) => setWishlist(data.map((p) => p._id)))
+        .catch((err) => console.error("Error fetching wishlist:", err));
     }
   }, [email]);
 
@@ -53,28 +58,32 @@ const CategoryProducts = () => {
   const toggleWishlist = async (productId) => {
     if (!email) return toast.error("Please login to use wishlist.");
 
-    if (!isInWishlist(productId)) {
-      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, productId }),
-      });
-      setWishlist([...wishlist, productId]);
-      toast.success("Added to wishlist");
-    } else {
-      await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, productId }),
-      });
-      setWishlist(wishlist.filter((id) => id !== productId));
-      toast.success("Removed from wishlist");
+    try {
+      if (!isInWishlist(productId)) {
+        await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, productId }),
+        });
+        setWishlist([...wishlist, productId]);
+        toast.success("Added to wishlist ❤️");
+      } else {
+        await fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, productId }),
+        });
+        setWishlist(wishlist.filter((id) => id !== productId));
+        toast.success("Removed from wishlist ❌");
+      }
+    } catch (err) {
+      console.error("Wishlist toggle error:", err);
+      toast.error("Something went wrong!");
     }
   };
 
   const handleAddToCart = async (product) => {
     if (!email) return toast.error("Please login to add to cart.");
-
     const cartData = {
       productId: product._id,
       productName: product.name,
@@ -85,23 +94,21 @@ const CategoryProducts = () => {
       date: new Date().toISOString(),
       status: "pending",
     };
-
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/add-to-cart`, cartData);
-      toast.success(`${product.name} added to cart`);
+      toast.success(`${product.name} added to cart 🛒`);
     } catch (err) {
       console.error("Add to cart error:", err);
       toast.error("Failed to add to cart");
     }
   };
 
-  if (loading) return <Loading />;
-
-  // Function to trim long product names
   const formatName = (name) => {
     const words = name.split(" ");
     return words.length > 2 ? `${words.slice(0, 2).join(" ")}...` : name;
   };
+
+  if (loading) return <Loading />;
 
   return (
     <section className="py-12 px-6 md:px-16 bg min-h-screen">
@@ -126,43 +133,62 @@ const CategoryProducts = () => {
                 />
               </div>
 
-              {/* Overlay with Eye + Heart */}
-              <div className="absolute bottom-40 left-1/2 transform -translate-x-1/2 secondary px-14 py-2 rounded-t-2xl flex items-center justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 cursor-pointer">
-                <FaEye
-                  size={20}
-                  className="hover:text-red-500"
-                  onClick={() => navigate(`/product/${product._id}`)}
-                />
-                {isInWishlist(product._id) ? (
-                  <HeartSolid
-                    className="h-5 w-5 text-red-500"
-                    onClick={() => toggleWishlist(product._id)}
+              {/* Overlay for large screens */}
+              {isLargeScreen && (
+                <div className="absolute bottom-40 left-1/2 transform -translate-x-1/2 secondary px-14 py-2 rounded-t-2xl flex items-center justify-center gap-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 cursor-pointer">
+                  <FaEye
+                    size={20}
+                    className="hover:text-red-500"
+                    onClick={() => navigate(`/product/${product._id}`)}
                   />
-                ) : (
-                  <HeartOutline
-                    className="h-5 w-5 text-gray-400 hover:text-red-500"
-                    onClick={() => toggleWishlist(product._id)}
-                  />
-                )}
-              </div>
+                  {isInWishlist(product._id) ? (
+                    <HeartSolid
+                      className="h-5 w-5 text-red-500"
+                      onClick={() => toggleWishlist(product._id)}
+                    />
+                  ) : (
+                    <HeartOutline
+                      className="h-5 w-5 text-gray-400 hover:text-red-500"
+                      onClick={() => toggleWishlist(product._id)}
+                    />
+                  )}
+                </div>
+              )}
 
               <div className="py-4">
-                <h3 className="text-lg font-semibold mb-1">
-                  {formatName(product.name)}
-                </h3>
-                <p className="text-sm text-gray-600 mb-1">
-                  Price: ৳{product.price}
-                </p>
-                <p className="text-sm text-gray-600 mb-3">
-                  Stock: {product.stock}
-                </p>
+                <h3 className="text-lg font-semibold mb-1">{formatName(product.name)}</h3>
+                <p className="text-sm text-gray-600 mb-1">Price: ৳{product.price}</p>
+                <p className="text-sm text-gray-600 mb-3">Stock: {product.stock}</p>
 
-                <button
-                  className="btn primary text-white w-full"
-                  onClick={() => handleAddToCart(product)}
-                >
-                  Add to Cart
-                </button>
+                {/* Buttons */}
+                {isLargeScreen ? (
+                  <button
+                    className="btn primary text-white w-full"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Add to Cart
+                  </button>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <button
+                      className="btn btn-sm primary text-white"
+                      onClick={() => navigate(`/product/${product._id}`)}
+                    >
+                      View Details
+                    </button>
+                    {isInWishlist(product._id) ? (
+                      <HeartSolid
+                        className="h-6 w-6 text-red-500 cursor-pointer"
+                        onClick={() => toggleWishlist(product._id)}
+                      />
+                    ) : (
+                      <HeartOutline
+                        className="h-6 w-6 text-gray-400 hover:text-red-500 cursor-pointer"
+                        onClick={() => toggleWishlist(product._id)}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           ))}
