@@ -70,15 +70,16 @@ const AllProducts = () => {
     }
   };
 
-  // Add to Cart function
   const handleAddToCart = async (product) => {
     if (!user?.email) return toast.error("Please login to add to cart.");
+    
+    const priceToUse = product.finalPrice || product.price;
 
     const cartData = {
       productId: product._id,
       productName: product.name,
       productImage: product.image,
-      price: product.price,
+      price: priceToUse, 
       quantity: 1,
       userEmail: user.email,
       date: new Date().toISOString(),
@@ -106,11 +107,15 @@ const AllProducts = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
         {products.map((product) => {
-          // 🔹 Limit product name to 2 words max
+          // Limit product name to 2 words max
           const shortName = (() => {
             const words = product.name.split(" ");
             return words.length > 2 ? words.slice(0, 2).join(" ") + "..." : product.name;
           })();
+
+          const hasDiscount = product.finalPrice && product.finalPrice < product.price;
+          const displayPrice = hasDiscount ? product.finalPrice : product.price;
+          const originalPrice = product.price;
 
           return (
             <div
@@ -125,7 +130,7 @@ const AllProducts = () => {
                 />
               </div>
 
-              {/* 🔹 Overlay (Only for desktop hover) */}
+              {/* Overlay (Only for desktop hover) */}
               <div className="hidden md:flex absolute bottom-40 left-1/2 transform -translate-x-1/2 secondary px-14 py-2 rounded-t-2xl items-center justify-center gap-4 opacity-0 md:group-hover:opacity-100 md:group-hover:translate-y-0 translate-y-4 transition-all duration-300 cursor-pointer">
                 <FaEye
                   size={20}
@@ -146,12 +151,22 @@ const AllProducts = () => {
               </div>
 
               <div className="py-4">
-                {/* 🔹 Shortened product name */}
+                {/* Shortened product name */}
                 <h3 className="text-lg font-semibold mb-1">{shortName}</h3>
-                <p className="text-sm text-gray-600 mb-1">Price: ৳{product.price}</p>
+                
+                {/* ✅ Updated Price Display Logic */}
+                <p className="text-sm text-gray-600 mb-1 font-semibold">
+                  Price: ৳{displayPrice}
+                  {hasDiscount && (
+                    <span className="line-through text-gray-400 ml-2 font-normal">
+                      ৳{originalPrice}
+                    </span>
+                  )}
+                </p>
+                
                 <p className="text-sm text-gray-600 mb-3">Stock: {product.stock}</p>
 
-                {/* ✅ Large screen: Add to Cart */}
+                {/* Large screen: Add to Cart */}
                 <div className="hidden md:block">
                   <button
                     className="btn primary text-white w-full"
@@ -161,7 +176,7 @@ const AllProducts = () => {
                   </button>
                 </div>
 
-                {/* ✅ Mobile view: View Details + Wishlist */}
+                {/* Mobile view: View Details + Wishlist */}
                 <div className="flex items-center justify-between md:hidden">
                   <button
                     className="btn btn-sm primary text-white"

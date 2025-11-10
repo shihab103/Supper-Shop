@@ -1,27 +1,30 @@
 import React from "react";
 
+// https://i.ibb.co.com/hRKyXDx3/asura.jpg
+// 
+// 
 // fake data
 const testimonialsData = [
   {
     id: 1,
-    name: "John Doe",
-    photo: "https://i.pravatar.cc/100?img=1",
+    name: "Samiya",
+    photo: "https://i.ibb.co.com/dJ2wYhkr/sumaiya.jpg",
     review:
-      "This shop is amazing! The delivery was super fast and the product quality is excellent.",
+    "This shop is amazing! The delivery was super fast and the product quality is excellent.",
     rating: 5,
   },
   {
     id: 2,
-    name: "Sarah Smith",
-    photo: "https://i.pravatar.cc/100?img=2",
+    name: "Afrina Tripty",
+    photo: "https://i.ibb.co.com/ccVp6cqf/tripty.jpg",
     review:
-      "Great customer service and affordable prices. I will definitely shop again.",
+    "Great customer service and affordable prices. I will definitely shop again.",
     rating: 4,
   },
   {
     id: 3,
-    name: "Michael Brown",
-    photo: "https://i.pravatar.cc/100?img=3",
+    name: "Asura",
+    photo: "https://i.ibb.co.com/hRKyXDx3/asura.jpg",
     review:
       "The website is easy to use and checkout was smooth. Highly recommend!",
     rating: 5,

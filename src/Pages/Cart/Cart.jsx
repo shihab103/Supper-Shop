@@ -5,13 +5,17 @@ import Loading from "../../Layout/Shared/Loading/Loading";
 import useAuth from "../../Hooks/useAuth";
 import Lottie from "lottie-react";
 import animation from "../../assets/Lotties/EmptyAnimation.json";
+import { useCart } from "./CartContext";
+import PaymentModal from "./PaymentModal";
 
 const Cart = () => {
   const { user } = useAuth();
-  const [cartItems, setCartItems] = useState([]);
+  const { cartItems, setCartItems } = useCart();
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [openPayment, setOpenPayment] = useState(false); // ✅ modal control
 
+  // ✅ Fetch user cart
   useEffect(() => {
     if (!user?.email) return;
 
@@ -31,21 +35,31 @@ const Cart = () => {
     };
 
     fetchCart();
-  }, [user?.email]);
+  }, [user?.email, setCartItems]);
 
   if (loading) return <Loading />;
 
   if (cartItems.length === 0)
-    return <div>
-      <Lottie className="w-90 mx-auto" animationData={animation} loop={true}></Lottie>
-      <h1 className="text-center text-black/60 mb-10">No Items in Your Cart</h1>
-    </div>;
+    return (
+      <div>
+        <Lottie
+          className="w-90 mx-auto"
+          animationData={animation}
+          loop={true}
+        />
+        <h1 className="text-center text-black/60 mb-10">
+          No Items in Your Cart
+        </h1>
+      </div>
+    );
 
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
+  // ✅ Remove single item from cart
   const handleRemove = async (itemId) => {
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/cart/${itemId}`);
@@ -57,8 +71,8 @@ const Cart = () => {
     }
   };
 
-  // ✅ Checkout Handler
-  const handleCheckout = async () => {
+  // ✅ Called when payment success from modal
+  const handlePaymentSuccess = async () => {
     if (!user?.email) return toast.error("You must be logged in to checkout");
 
     setCheckoutLoading(true);
@@ -70,7 +84,7 @@ const Cart = () => {
 
       if (res.data.success) {
         toast.success("Order placed successfully!");
-        setCartItems([]); // empty cart in UI
+        setCartItems([]); // empty frontend cart
       } else {
         toast.error(res.data.error || "Checkout failed");
       }
@@ -84,7 +98,9 @@ const Cart = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">My Cart</h2>
+      <h2 className="text-2xl font-bold mb-6">
+        My Cart ({totalItems} {totalItems === 1 ? "item" : "items"})
+      </h2>
 
       <div className="flex flex-col gap-4">
         {cartItems.map((item) => (
@@ -124,13 +140,22 @@ const Cart = () => {
       <div className="mt-6 text-right">
         <h3 className="text-xl font-bold">Total: {totalPrice.toFixed(2)}৳</h3>
         <button
-          onClick={handleCheckout}
+          onClick={() => setOpenPayment(true)} // ✅ open modal instead of direct checkout
           disabled={checkoutLoading}
           className="btn primary text-white mt-3"
         >
           {checkoutLoading ? "Processing..." : "Proceed to Checkout"}
         </button>
       </div>
+
+      {/* ✅ Payment Modal */}
+      <PaymentModal
+        open={openPayment}
+        onClose={() => setOpenPayment(false)}
+        onSuccess={handlePaymentSuccess}
+        userEmail={user?.email}
+        amount={totalPrice}
+      />
     </div>
   );
 };

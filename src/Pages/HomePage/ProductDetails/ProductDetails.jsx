@@ -23,9 +23,10 @@ const ProductDetails = () => {
   const [myRating, setMyRating] = useState(0);
   const [userInfo, setUserInfo] = useState(null);
   const [showFullDesc, setShowFullDesc] = useState(false);
+  const [updatingDiscount, setUpdatingDiscount] = useState(false);
+
   const navigate = useNavigate();
 
-  // Fetch product, related products, reviews
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,6 +34,11 @@ const ProductDetails = () => {
           `${import.meta.env.VITE_API_URL}/product/${id}`
         );
         const data = await res.json();
+
+        if (!data.finalPrice)
+          data.finalPrice =
+            data.price - ((data.discount || 0) * data.price) / 100;
+
         setProduct(data);
 
         // Related products
@@ -62,7 +68,6 @@ const ProductDetails = () => {
     fetchData();
   }, [id]);
 
-  // Fetch wishlist
   useEffect(() => {
     if (user?.email) {
       fetch(`${import.meta.env.VITE_API_URL}/wishlist-by-email/${user.email}`)
@@ -75,9 +80,7 @@ const ProductDetails = () => {
   const isInWishlist = product ? wishlist.includes(product._id) : false;
 
   const toggleWishlist = async () => {
-    if (!user?.email) {
-      return toast.error("Please login to use wishlist.");
-    }
+    if (!user?.email) return toast.error("Please login to use wishlist.");
     try {
       if (!isInWishlist) {
         const res = await fetch(
@@ -146,7 +149,11 @@ const ProductDetails = () => {
       });
 
       if (res.ok) {
-        setReviews([...reviews, reviewObj]);
+        const newReviewData = {
+          ...reviewObj,
+          date: reviewObj.date.toISOString(),
+        };
+        setReviews([...reviews, newReviewData]);
         setMyReview("");
         setMyRating(0);
         toast.success("Review submitted ✅");
@@ -159,6 +166,39 @@ const ProductDetails = () => {
     }
   };
 
+  // ✅ Updated handleDiscountChange function
+  const handleDiscountChange = async (newDiscount) => {
+    if (!product) return;
+    setUpdatingDiscount(true);
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/product/${product._id}/discount`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            discount: newDiscount,
+          }),
+        }
+      );
+
+      if (res.ok) {
+        const updatedProduct = await res.json();
+        setProduct(updatedProduct);
+
+        toast.success("Discount and price updated successfully! 🎉");
+      } else {
+        toast.error("Failed to update discount");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong!");
+    } finally {
+      setUpdatingDiscount(false);
+    }
+  };
+
   const addToCart = async () => {
     if (!user?.email) return toast.error("Please login first.");
     if (!userInfo) return toast.error("User info not loaded yet.");
@@ -167,7 +207,7 @@ const ProductDetails = () => {
       productId: product._id,
       productName: product.name,
       productImage: product.image,
-      price: product.price,
+      price: product.finalPrice || product.price,
       quantity: 1,
       userId: userInfo._id,
       userEmail: userInfo.email,
@@ -213,7 +253,7 @@ const ProductDetails = () => {
           );
           if (res.ok) {
             Swal.fire("Deleted!", "Product has been deleted.", "success");
-            navigate("/"); // Redirect after delete
+            navigate("/");
           } else {
             Swal.fire("Failed!", "Failed to delete product.", "error");
           }
@@ -227,6 +267,12 @@ const ProductDetails = () => {
 
   if (loading) return <Loading />;
   if (!product) return <p className="text-center mt-10">Product not found</p>;
+
+  const isAdmin = userInfo?.role === "admin";
+
+  // ✅ Display variables (final price now comes from product object)
+  const currentDiscount = product.discount || 0;
+  const currentFinalPrice = product.finalPrice || product.price;
 
   return (
     <section className="max-w-7xl mx-auto p-6 rounded shadow">
@@ -242,12 +288,13 @@ const ProductDetails = () => {
               className="w-full md:w-96 h-96 md:h-auto object-cover rounded"
             />
 
-            {/* Wishlist + Delete buttons */}
+            {/* Wishlist + Delete buttons (Conditional Admin Check on Delete) */}
             <div className="absolute top-3 right-3 flex gap-2">
-              <button onClick={deleteProduct} className="hover:text-red-500">
-                <TrashIcon className="h-6 w-6" />
-              </button>
-
+              {isAdmin && (
+                <button onClick={deleteProduct} className="hover:text-red-500">
+                  <TrashIcon className="h-6 w-6" />
+                </button>
+              )}
               <button onClick={toggleWishlist}>
                 {isInWishlist ? (
                   <HeartSolid className="h-6 w-6 text-red-500" />
@@ -261,7 +308,7 @@ const ProductDetails = () => {
               <div>
                 <h2 className="text-xl font-bold">{product.name}</h2>
 
-                {/* Description with See More / See Less */}
+                {/* Description */}
                 <div className="mt-2">
                   <p className="text-gray-700">
                     {showFullDesc
@@ -271,7 +318,6 @@ const ProductDetails = () => {
                           ? "..."
                           : "")}
                   </p>
-
                   {product.description.split(" ").length > 15 && (
                     <button
                       onClick={() => setShowFullDesc(!showFullDesc)}
@@ -282,7 +328,15 @@ const ProductDetails = () => {
                   )}
                 </div>
 
-                <p className="mt-1 font-semibold">Price: {product.price}৳</p>
+                {/* Price */}
+                <p className="mt-1 font-semibold">
+                  Price: {currentFinalPrice}৳{" "}
+                  {currentDiscount > 0 && (
+                    <span className="line-through text-gray-400 ml-2">
+                      {product.price}৳ {/* Original Price */}
+                    </span>
+                  )}
+                </p>
                 <p>Stock: {product.stock} pcs</p>
                 <p>Category: {product.categoryName}</p>
                 {product.createdAt && (
@@ -296,12 +350,45 @@ const ProductDetails = () => {
                   </p>
                 )}
               </div>
-              <button
-                onClick={addToCart}
-                className="btn primary text-white mt-3"
-              >
-                Add to Cart
-              </button>
+
+              <div className="flex flex-col">
+                {/* Discount Dropdown (Conditional Admin Check) */}
+                {isAdmin && (
+                  <div className="dropdown  mt-2">
+                    <div
+                      tabIndex={0}
+                      role="button"
+                      className="btn w-full  primary text-white"
+                    >
+                      {currentDiscount
+                        ? `Discount: ${currentDiscount}%`
+                        : "Set Discount"}
+                    </div>
+                    <ul
+                      tabIndex={-1}
+                      className="dropdown-content menu bg-base-100 rounded-box w-40 p-2 shadow z-[1]"
+                    >
+                      {[0, 10, 20, 30, 40, 50].map((d) => (
+                        <li key={d}>
+                          <button
+                            disabled={updatingDiscount}
+                            onClick={() => handleDiscountChange(d)}
+                          >
+                            {d === 0 ? "No Discount" : `${d}%`}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <button
+                  onClick={addToCart}
+                  className="btn primary text-white mt-3"
+                >
+                  Add to Cart
+                </button>
+              </div>
             </div>
           </div>
 

@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 import ShopLogo from "../Shared/ShopLogo/ShopLogo";
 import { FiUser, FiHeart, FiShoppingCart, FiChevronDown } from "react-icons/fi";
 import { useNavigate } from "react-router";
+import useAuth from "../../Hooks/useAuth";
+import { useCart } from "../../Pages/Cart/CartContext";
 
 const TopSection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { cartCount } = useCart();
   const [categories, setCategories] = useState([]);
 
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -31,7 +36,6 @@ const TopSection = () => {
 
         {/* Middle: Category + Search */}
         <div className="flex items-center gap-4 flex-1 max-w-3xl w-full">
-          {/* Category Dropdown */}
           <div className="dropdown dropdown-hover">
             <label
               tabIndex={0}
@@ -52,7 +56,6 @@ const TopSection = () => {
             </ul>
           </div>
 
-          {/* Search Box */}
           <input
             type="text"
             placeholder="Search for products..."
@@ -61,17 +64,34 @@ const TopSection = () => {
         </div>
 
         {/* Right: Account, Wishlist, Cart */}
-        <div className="flex items-center gap-6 text-gray-600 text-sm font-medium">
-          <div onClick={()=>navigate('/my-profile')} className="flex items-center gap-1 cursor-pointer hover:text-[#669295]">
+        <div className="flex items-center gap-6 text-gray-600 text-sm font-medium relative">
+          <div
+            onClick={() => navigate("/my-profile")}
+            className="flex items-center gap-1 cursor-pointer hover:text-[#669295]"
+          >
             <FiUser className="text-xl" />
             <span>Account</span>
           </div>
-          <div onClick={()=>navigate('/wishlist')} className="flex items-center gap-1 cursor-pointer hover:text-[#669295]">
+
+          <div
+            onClick={() => navigate("/wishlist")}
+            className="flex items-center gap-1 cursor-pointer hover:text-[#669295]"
+          >
             <FiHeart className="text-xl" />
             <span>Wishlist</span>
           </div>
-          <div onClick={()=>navigate('/cart')} className="flex items-center gap-1 cursor-pointer hover:text-[#669295]">
+
+          {/* Cart icon with badge */}
+          <div
+            onClick={() => navigate("/cart")}
+            className="relative flex items-center gap-1 cursor-pointer hover:text-[#669295]"
+          >
             <FiShoppingCart className="text-xl" />
+            {cartCount > 0 && (
+              <span className="absolute -top-3 -right-2 bg-[#cfe1e5] text-black text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                {cartCount}
+              </span>
+            )}
             <span>Cart</span>
           </div>
         </div>

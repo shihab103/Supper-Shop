@@ -17,7 +17,7 @@ const Loading = () => {
         <Lottie
           animationData={Animation}
           loop={true}
-          style={{ width: 150, height: 150 }} // 👈 control size here
+          style={{ width: 150, height: 150 }}
         />
       </div>
     );

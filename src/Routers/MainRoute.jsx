@@ -13,12 +13,12 @@ import DashboardLayout from "../Layout/DashboardLayout/DashboardLayout";
 import Account from "../Pages/Account/Account";
 import MyProfile from "../Pages/Account/MyProfile";
 import AllReview from "../Component/Dashboard/Admin/AllReview/AllReview";
-import Cart from "../Pages/cart/Cart";
 import About from "../Pages/About/About";
 import ContactUs from "../Pages/ContactUs/ContactUs";
 import AdminDashboardHome from "../Component/Dashboard/Admin/AdminDashboardHome/AdminDashboardHome";
 import AllUser from "../Component/Dashboard/Admin/AllUser/AllUser";
 import AllOrders from "../Component/Dashboard/Admin/AllOrders/AllOrders";
+import Cart from "../Pages/Cart/Cart";
 
 const MainRoute = createBrowserRouter([
   {

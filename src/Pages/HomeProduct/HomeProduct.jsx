@@ -115,7 +115,7 @@ const AllProducts = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-        {products.map((product) => (
+        {products.slice(0,8).map((product) => (
           <div
             key={product._id}
             className="relative card-bg secondary px-4 pt-4 shadow-md rounded-2xl overflow-hidden transition hover:shadow-lg group"
