@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import toast from "react-hot-toast";
+import { AuthContext } from "../../../../Context/AuthContext";
 import Loading from "../../../../Layout/Shared/Loading/Loading";
 
-const AllOrders = () => {
+const MyOrders = () => {
+  const { user } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all orders
-  const fetchOrders = async () => {
+  // Fetch orders for logged-in user
+  const fetchMyOrders = async () => {
+    if (!user?.email) return;
+
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/all-orders`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/my-orders/${user.email}`
+      );
       const data = await res.json();
 
       const sortedData = data.sort(
@@ -19,41 +25,38 @@ const AllOrders = () => {
 
       setOrders(sortedData);
     } catch (err) {
-      console.error("Failed to fetch orders:", err);
-      toast.error("Failed to fetch orders");
+      console.error("Failed to fetch your orders:", err);
+      toast.error("Failed to load your orders");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    fetchMyOrders();
+  }, [user]);
 
-  // Handle order status update (Admin)
-  const handleStatusChange = async (orderId, newStatus) => {
+  // Cancel Order (Only Pending)
+  const handleCancel = async (orderId) => {
+    if (!confirm("Are you sure you want to cancel this order?")) return;
+
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/update-order-status/${orderId}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: newStatus }),
-        }
+        `${import.meta.env.VITE_API_URL}/cancel-order/${orderId}`,
+        { method: "PATCH" }
       );
 
       if (res.ok) {
-        setOrders((prevOrders) =>
-          prevOrders.map((order) =>
-            order._id === orderId ? { ...order, status: newStatus } : order
+        setOrders((prev) =>
+          prev.map((o) =>
+            o._id === orderId ? { ...o, status: "cancelled" } : o
           )
         );
-        toast.success("Order status updated");
+        toast.success("Order cancelled successfully");
       } else {
-        toast.error("Failed to update status");
+        toast.error("Failed to cancel order");
       }
     } catch (err) {
-      console.error(err);
       toast.error("Something went wrong");
     }
   };
@@ -62,12 +65,12 @@ const AllOrders = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-8 text-center">🛒 All Orders</h2>
+      <h2 className="text-3xl font-bold mb-8 text-center">📦 My Orders</h2>
 
       {orders.length === 0 ? (
-        <p className="text-center">No orders found.</p>
+        <p className="text-center text-gray-600">You have no orders yet.</p>
       ) : (
-        <div className="space-y-8 ">
+        <div className="space-y-8">
           {orders.map((order) => (
             <div
               key={order._id}
@@ -80,7 +83,8 @@ const AllOrders = () => {
                     Order ID: <span className="text-gray-500">{order._id}</span>
                   </h3>
                   <p className="text-sm text-gray-600">
-                    <strong>Customer:</strong> {order.customerName} ({order.userEmail})
+                    <strong>Date:</strong>{" "}
+                    {new Date(order.orderDate).toLocaleString()}
                   </p>
                   <p className="text-sm text-gray-600">
                     <strong>Phone:</strong> {order.phone}
@@ -88,52 +92,45 @@ const AllOrders = () => {
                   <p className="text-sm text-gray-600">
                     <strong>Address:</strong> {order.billingAddress}
                   </p>
-                  <p className="text-sm text-gray-600">
-                    <strong>Date:</strong>{" "}
-                    {new Date(order.orderDate).toLocaleString()}
-                  </p>
                 </div>
 
                 <div className="mt-4 md:mt-0 flex flex-col items-start md:items-end">
                   <p className="text-xl font-bold text-green-600 mb-2">
                     💰 Total: {order.totalAmount}৳
                   </p>
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                        order.status === "pending"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : order.status === "processing"
-                          ? "bg-blue-100 text-blue-700"
-                          : order.status === "completed"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
+
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      order.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : order.status === "processing"
+                        ? "bg-blue-100 text-blue-700"
+                        : order.status === "completed"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {order.status}
+                  </span>
+
+                  {/* Cancel Button (Only Pending) */}
+                  {order.status === "pending" && (
+                    <button
+                      onClick={() => handleCancel(order._id)}
+                      className="mt-2 px-4 py-1 primary text-white rounded-full text-sm hover:bg-red-700"
                     >
-                      {order.status}
-                    </span>
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        handleStatusChange(order._id, e.target.value)
-                      }
-                      className="border rounded-full px-3 py-1 text-sm focus:outline-none"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="processing">Processing</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
-                    </select>
-                  </div>
+                      Cancel Order
+                    </button>
+                  )}
                 </div>
               </div>
 
-              {/* Order Items */}
+              {/* Order items */}
               <div className="grid md:grid-cols-2 gap-4">
                 {order.items?.map((item, idx) => (
                   <div
                     key={`${order._id}-${idx}`}
-                    className="flex items-center gap-4 bg border rounded-xl p-3 bg-gray-50"
+                    className="flex bg items-center gap-4 border rounded-xl p-3 bg-gray-50"
                   >
                     <img
                       src={item.productImage}
@@ -163,4 +160,4 @@ const AllOrders = () => {
   );
 };
 
-export default AllOrders;
+export default MyOrders;

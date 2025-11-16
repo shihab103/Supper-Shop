@@ -67,27 +67,23 @@ const DashboardLayout = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  className={"font-semibold"}
-                  to="/dashboard/all-review"
-                >
+                <NavLink className={"font-semibold"} to="/dashboard/all-review">
                   All Review
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  className={"font-semibold"}
-                  to="/dashboard/all-user"
-                >
+                <NavLink className={"font-semibold"} to="/dashboard/all-user">
                   All User
                 </NavLink>
               </li>
               <li>
-                <NavLink
-                  className={"font-semibold"}
-                  to="/dashboard/all-orders"
-                >
+                <NavLink className={"font-semibold"} to="/dashboard/all-orders">
                   All Orders
+                </NavLink>
+              </li>
+              <li>
+                <NavLink className={"font-semibold"} to="/dashboard/my-orders">
+                  My Orders
                 </NavLink>
               </li>
               <li>
@@ -102,14 +98,11 @@ const DashboardLayout = () => {
           )}
           {role === "customer" && (
             <>
-              {/* <li>
-                <NavLink
-                  className={"font-semibold"}
-                  to={"/dashboard/add-product"}
-                >
-                  Add Product
+              <li>
+                <NavLink className={"font-semibold"} to="/dashboard/my-orders">
+                  My Orders
                 </NavLink>
-              </li> */}
+              </li>
             </>
           )}
         </ul>
